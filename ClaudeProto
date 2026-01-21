@@ -1026,7 +1026,7 @@
                     <!-- Alert Banner -->
                     <div class="record-alert" id="recordAlert">
                         <div class="alert-content">
-                            <span class="alert-icon">⚡</span>
+                            <span class="alert-icon">●</span>
                             <span class="alert-text">RECORD NOW!</span>
                             <span class="alert-subject" id="alertSubject">Target Student</span>
                         </div>
@@ -1034,7 +1034,7 @@
 
                     <div class="behavior-categories">
                         <div class="category-group on-task">
-                            <h4>✓ On-Task</h4>
+                            <h4>ON-TASK</h4>
                             <div class="behavior-grid">
                                 <button class="behavior-btn btn-aet" id="btn-AET" onclick="recordBehavior('AET')" disabled>
                                     <span class="code">1 AET</span>
@@ -1047,7 +1047,7 @@
                             </div>
                         </div>
                         <div class="category-group off-task">
-                            <h4>✗ Off-Task</h4>
+                            <h4>OFF-TASK</h4>
                             <div class="behavior-grid">
                                 <button class="behavior-btn btn-oft-m" id="btn-OFT-M" onclick="recordBehavior('OFT-M')" disabled>
                                     <span class="code">3 OFT-M</span>
@@ -1065,7 +1065,7 @@
                         </div>
                     </div>
                     <div class="keyboard-hint">
-                        <span>⌨️ Keyboard: Press <kbd>1</kbd>-<kbd>5</kbd> to record (only when not typing in notes)</span>
+                        <span>Keyboard shortcuts: Press <kbd>Shift+1</kbd> through <kbd>Shift+5</kbd> to record behaviors (works even while typing notes)</span>
                     </div>
                 </div>
             </div>
@@ -1176,27 +1176,39 @@
                 isNotesFieldFocused = false;
             });
 
-            // Keyboard shortcuts (1-5 for behaviors)
+            // Keyboard shortcuts (Shift+1-5 for behaviors, works even while typing)
             document.addEventListener('keydown', (e) => {
-                // Don't trigger shortcuts if typing in notes or any input field
-                if (isNotesFieldFocused || e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-                    return;
-                }
-
                 // Only work when waiting for input
                 if (!waitingForInput) return;
 
-                const keyMap = {
-                    '1': 'AET',
-                    '2': 'PET',
-                    '3': 'OFT-M',
-                    '4': 'OFT-V',
-                    '5': 'OFT-P'
-                };
+                // Check for Shift+1 through Shift+5
+                if (e.shiftKey && e.key >= '1' && e.key <= '5') {
+                    e.preventDefault(); // Prevent typing the character
 
-                if (keyMap[e.key]) {
-                    e.preventDefault();
+                    const keyMap = {
+                        '1': 'AET',
+                        '2': 'PET',
+                        '3': 'OFT-M',
+                        '4': 'OFT-V',
+                        '5': 'OFT-P'
+                    };
+
                     recordBehavior(keyMap[e.key]);
+                }
+                // Also support plain 1-5 when NOT typing in an input field (for convenience)
+                else if (!isNotesFieldFocused && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                    const keyMap = {
+                        '1': 'AET',
+                        '2': 'PET',
+                        '3': 'OFT-M',
+                        '4': 'OFT-V',
+                        '5': 'OFT-P'
+                    };
+
+                    if (keyMap[e.key]) {
+                        e.preventDefault();
+                        recordBehavior(keyMap[e.key]);
+                    }
                 }
             });
         });
@@ -1396,23 +1408,15 @@
             if (isTargetTurn()) {
                 alertEl.classList.remove('peer-turn');
                 recordingSection.classList.remove('peer-alert');
-                alertSubject.textContent = '👤 Target Student';
+                alertSubject.textContent = 'TARGET STUDENT';
             } else {
                 alertEl.classList.add('peer-turn');
                 recordingSection.classList.add('peer-alert');
-                alertSubject.textContent = '👥 Comparison Peer';
+                alertSubject.textContent = 'COMPARISON PEER';
             }
 
             waitingForInput = true;
             highlightBehaviorButtons(true);
-
-            // Check if observation complete
-            if (currentInterval >= totalIntervals) {
-                setTimeout(() => {
-                    stopObservation();
-                    showToast('Observation complete!');
-                }, 100);
-            }
         }
 
         function playIntervalSound() {
@@ -1472,6 +1476,14 @@
             document.getElementById('countdownDisplay').classList.remove('warning', 'urgent');
 
             waitingForInput = false;
+
+            // Check if observation complete AFTER recording
+            if (currentInterval >= totalIntervals) {
+                setTimeout(() => {
+                    stopObservation();
+                    showToast('Observation complete!');
+                }, 100);
+            }
         }
 
         function updateObservationCounts() {
@@ -1567,12 +1579,12 @@
         function updateTurnDisplay() {
             const turnEl = document.getElementById('currentTurn');
             const patternEl = document.getElementById('turnPattern');
-            
+
             if (isTargetTurn()) {
-                turnEl.textContent = '👤 Observe TARGET Student';
+                turnEl.textContent = 'RECORDING: Target Student';
                 turnEl.className = 'current-turn target';
             } else {
-                turnEl.textContent = '👥 Observe PEER';
+                turnEl.textContent = 'RECORDING: Comparison Peer';
                 turnEl.className = 'current-turn peer';
             }
 
