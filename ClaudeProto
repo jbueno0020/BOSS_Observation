@@ -1164,7 +1164,7 @@
                         </div>
                     </div>
                     <div class="keyboard-hint">
-                        <span>Keyboard shortcuts: Press <kbd>Shift+1</kbd> through <kbd>Shift+5</kbd> to record behaviors (works even while typing notes)</span>
+                        <span>Keyboard shortcuts: Press <kbd>Ctrl+1</kbd> through <kbd>Ctrl+5</kbd> to record behaviors (works even while typing notes)</span>
                     </div>
                 </div>
             </div>
@@ -1289,14 +1289,14 @@
                 isNotesFieldFocused = false;
             });
 
-            // Keyboard shortcuts (Shift+1-5 for behaviors, works even while typing)
+            // Keyboard shortcuts (Ctrl+1-5 for behaviors, works even while typing in notes)
             document.addEventListener('keydown', (e) => {
                 // Only work when waiting for input
                 if (!waitingForInput) return;
 
-                // Check for Shift+1 through Shift+5
-                if (e.shiftKey && e.key >= '1' && e.key <= '5') {
-                    e.preventDefault(); // Prevent typing the character
+                // Check for Ctrl+1 through Ctrl+5 (works while typing in notes)
+                if (e.ctrlKey && e.key >= '1' && e.key <= '5') {
+                    e.preventDefault(); // Prevent any default browser behavior
 
                     const keyMap = {
                         '1': 'AET',
