@@ -482,13 +482,13 @@
         }
 
         .recording-section.alert-active {
-            border-color: var(--accent-yellow);
-            box-shadow: 0 0 0 1px var(--accent-yellow);
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 1px var(--accent-blue);
         }
 
         .recording-section.alert-active.peer-alert {
-            border-color: #66cdaa;
-            box-shadow: 0 0 0 1px #66cdaa;
+            border-color: var(--accent-green);
+            box-shadow: 0 0 0 1px var(--accent-green);
         }
 
         .recording-grid {
@@ -594,8 +594,8 @@
         /* Record Alert Banner - Subtle with pulse */
         .record-alert {
             display: none;
-            background: rgba(210, 153, 34, 0.15);
-            border: 2px solid var(--accent-yellow);
+            background: rgba(74, 144, 217, 0.15);
+            border: 2px solid var(--accent-blue);
             border-radius: 8px;
             padding: 10px 16px;
             margin-bottom: 12px;
@@ -616,7 +616,7 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-            color: var(--accent-yellow);
+            color: var(--accent-blue);
             font-weight: 600;
         }
 
@@ -625,28 +625,30 @@
         }
 
         .alert-text {
-            font-size: 14px;
+            font-size: 18px;
             letter-spacing: 0.5px;
         }
 
         .alert-subject {
-            background: rgba(210, 153, 34, 0.2);
-            padding: 3px 10px;
+            background: rgba(74, 144, 217, 0.2);
+            padding: 4px 12px;
             border-radius: 100px;
-            font-size: 12px;
+            font-size: 16px;
+            color: var(--accent-blue);
         }
 
         .record-alert.peer-turn {
-            background: rgba(102, 205, 170, 0.15);
-            border-color: #66cdaa;
+            background: rgba(92, 184, 92, 0.15);
+            border-color: var(--accent-green);
         }
 
         .record-alert.peer-turn .alert-content {
-            color: #66cdaa;
+            color: var(--accent-green);
         }
 
         .record-alert.peer-turn .alert-subject {
-            background: rgba(102, 205, 170, 0.2);
+            background: rgba(92, 184, 92, 0.2);
+            color: var(--accent-green);
         }
 
         /* Keyboard Hint */
@@ -852,6 +854,67 @@
             font-size: 20px;
         }
 
+        /* Sticky Info Bar */
+        .sticky-info-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border-bottom: 2px solid var(--border);
+            padding: 12px 24px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            box-shadow: 0 4px 12px var(--shadow);
+            animation: slideDown 0.3s ease;
+        }
+
+        .sticky-info-bar.show {
+            display: flex;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .sticky-timer {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--accent-green);
+        }
+
+        .sticky-interval {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .sticky-interval span {
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        .sticky-counts {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+        }
+
+        .sticky-count-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
         /* Responsive */
         @media (max-width: 900px) {
             .recording-grid {
@@ -889,6 +952,22 @@
                 flex-direction: column;
                 gap: 12px;
                 align-items: flex-start;
+            }
+
+            .sticky-info-bar {
+                padding: 8px 16px;
+                flex-direction: column;
+                gap: 8px;
+                align-items: flex-start;
+            }
+
+            .sticky-timer {
+                font-size: 20px;
+            }
+
+            .sticky-counts {
+                gap: 12px;
+                font-size: 12px;
             }
         }
 
@@ -933,6 +1012,26 @@
     </style>
 </head>
 <body>
+    <!-- Sticky Info Bar (shows when scrolled) -->
+    <div class="sticky-info-bar" id="stickyInfoBar">
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <div class="sticky-timer" id="stickyTimer">00:00</div>
+            <div class="sticky-interval">
+                Interval: <span id="stickyCurrentInterval">0</span> / <span id="stickyTotalIntervals">0</span>
+            </div>
+        </div>
+        <div class="sticky-counts">
+            <div class="sticky-count-item">
+                <span class="count-dot target"></span>
+                <span>Target: <strong id="stickyTargetCount">n=0</strong></span>
+            </div>
+            <div class="sticky-count-item">
+                <span class="count-dot peer"></span>
+                <span>Peer: <strong id="stickyPeerCount">n=0</strong></span>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <header class="header">
             <h1>📋 BOSS Observation Tool</h1>
@@ -1164,8 +1263,22 @@
             document.getElementById('observationDate').valueAsDate = new Date();
             updateTotalIntervals();
             initChart();
-            
+
             document.getElementById('duration').addEventListener('change', updateTotalIntervals);
+
+            // Handle sticky info bar on scroll
+            let timerSection = document.getElementById('timerSection');
+            let stickyBar = document.getElementById('stickyInfoBar');
+
+            window.addEventListener('scroll', () => {
+                let timerRect = timerSection.getBoundingClientRect();
+                // Show sticky bar when timer section is above viewport
+                if (timerRect.bottom < 0 && isRunning) {
+                    stickyBar.classList.add('show');
+                } else {
+                    stickyBar.classList.remove('show');
+                }
+            });
 
             // Track if notes field is focused
             const notesField = document.getElementById('observationNotes');
@@ -1218,6 +1331,7 @@
             // 15-second intervals = 4 intervals per minute
             totalIntervals = duration * 4;
             document.getElementById('totalIntervals').textContent = totalIntervals;
+            document.getElementById('stickyTotalIntervals').textContent = totalIntervals;
         }
 
         function isTargetTurn() {
@@ -1386,6 +1500,7 @@
         function promptForObservation() {
             currentInterval++;
             document.getElementById('currentInterval').textContent = currentInterval;
+            document.getElementById('stickyCurrentInterval').textContent = currentInterval;
 
             // Play sound
             playIntervalSound();
@@ -1489,10 +1604,12 @@
         function updateObservationCounts() {
             const targetObs = observations.filter(o => o.subject === 'Target').length;
             const peerObs = observations.filter(o => o.subject === 'Peer').length;
-            
+
             document.getElementById('targetCount').textContent = `n=${targetObs}`;
             document.getElementById('peerCount').textContent = `n=${peerObs}`;
-            document.getElementById('chartSubtitle').textContent = 
+            document.getElementById('stickyTargetCount').textContent = `n=${targetObs}`;
+            document.getElementById('stickyPeerCount').textContent = `n=${peerObs}`;
+            document.getElementById('chartSubtitle').textContent =
                 `Target Student n=${targetObs} • Comparison Peer n=${peerObs} • interval=15s`;
         }
 
@@ -1521,7 +1638,7 @@
             isRunning = false;
             isPaused = false;
             clearInterval(timer);
-            
+
             document.getElementById('startBtn').disabled = false;
             document.getElementById('pauseBtn').disabled = true;
             document.getElementById('stopBtn').disabled = true;
@@ -1529,7 +1646,8 @@
             document.getElementById('pauseBtn').innerHTML = '⏸ Pause';
             document.getElementById('recordAlert').classList.remove('show', 'peer-turn');
             document.getElementById('recordingSection').classList.remove('alert-active', 'peer-alert');
-            
+            document.getElementById('stickyInfoBar').classList.remove('show');
+
             enableBehaviorButtons(false);
             highlightBehaviorButtons(false);
         }
@@ -1545,12 +1663,16 @@
             secondsUntilNextInterval = 15;
 
             document.getElementById('timerDisplay').textContent = '00:00';
+            document.getElementById('stickyTimer').textContent = '00:00';
             document.getElementById('currentInterval').textContent = '0';
+            document.getElementById('stickyCurrentInterval').textContent = '0';
             document.getElementById('currentTurn').textContent = 'Waiting to Start';
             document.getElementById('currentTurn').className = 'current-turn target';
             document.getElementById('targetCount').textContent = 'n=0';
             document.getElementById('peerCount').textContent = 'n=0';
-            document.getElementById('chartSubtitle').textContent = 
+            document.getElementById('stickyTargetCount').textContent = 'n=0';
+            document.getElementById('stickyPeerCount').textContent = 'n=0';
+            document.getElementById('chartSubtitle').textContent =
                 'Target Student n=0 • Comparison Peer n=0 • interval=15s';
             document.getElementById('pauseBtn').innerHTML = '⏸ Pause';
             document.getElementById('countdownNumber').textContent = '15';
@@ -1566,8 +1688,9 @@
         function updateTimerDisplay() {
             const minutes = Math.floor(currentSeconds / 60);
             const seconds = currentSeconds % 60;
-            document.getElementById('timerDisplay').textContent = 
-                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            const timeStr = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('timerDisplay').textContent = timeStr;
+            document.getElementById('stickyTimer').textContent = timeStr;
         }
 
         function formatTime(totalSeconds) {
