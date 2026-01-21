@@ -360,6 +360,8 @@
             text-align: left;
             position: relative;
             overflow: hidden;
+            min-height: 44px; /* Minimum touch target size */
+            -webkit-tap-highlight-color: transparent;
         }
 
         .behavior-btn:disabled {
@@ -854,6 +856,212 @@
             font-size: 20px;
         }
 
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-large {
+            max-width: 800px;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 32px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-section {
+            margin-bottom: 24px;
+        }
+
+        .modal-section h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .session-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .session-info {
+            flex: 1;
+        }
+
+        .session-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .session-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .session-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+        }
+
+        .settings-group {
+            margin-bottom: 20px;
+        }
+
+        .settings-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .settings-group select,
+        .settings-group input[type="range"] {
+            width: 100%;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .settings-group input[type="range"] {
+            padding: 0;
+        }
+
+        .help-section {
+            margin-bottom: 24px;
+        }
+
+        .help-section h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--accent-blue);
+            margin-bottom: 12px;
+        }
+
+        .help-section h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 12px 0 8px 0;
+        }
+
+        .help-section p,
+        .help-section li {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .help-section ul,
+        .help-section ol {
+            padding-left: 24px;
+        }
+
+        .help-section kbd {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+        }
+
         /* Sticky Info Bar */
         .sticky-info-bar {
             position: fixed;
@@ -969,6 +1177,61 @@
                 gap: 12px;
                 font-size: 12px;
             }
+
+            /* Mobile-specific touch improvements */
+            .behavior-btn {
+                padding: 20px 24px;
+                font-size: 14px;
+                min-height: 56px;
+            }
+
+            .behavior-btn .code {
+                font-size: 20px;
+            }
+
+            .btn {
+                padding: 16px 24px;
+                font-size: 15px;
+                min-height: 48px;
+            }
+
+            .control-buttons {
+                width: 100%;
+            }
+
+            .control-buttons .btn {
+                flex: 1;
+                min-width: 120px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .header p {
+                font-size: 13px;
+            }
+
+            .modal-content {
+                width: 95%;
+                max-height: 90vh;
+            }
+
+            .chart-actions {
+                width: 100%;
+            }
+
+            .chart-actions .btn {
+                flex: 1;
+            }
+        }
+
+        /* Tablet optimizations */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .behavior-btn {
+                padding: 18px 22px;
+                min-height: 52px;
+            }
         }
 
         /* Empty State */
@@ -1034,28 +1297,36 @@
 
     <div class="container">
         <header class="header">
-            <h1>📋 BOSS Observation Tool</h1>
-            <p>Behavioral Observation of Students in Schools - Momentary Time Sampling</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <div>
+                    <h1>📋 BOSS Observation Tool</h1>
+                    <p>Behavioral Observation of Students in Schools - Momentary Time Sampling</p>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn btn-secondary btn-small" onclick="openHelp()" title="Help">?</button>
+                    <button class="btn btn-secondary btn-small" onclick="openSettings()" title="Settings">⚙️</button>
+                </div>
+            </div>
         </header>
 
         <!-- Setup Panel -->
-        <section class="setup-panel">
+        <section class="setup-panel" role="form" aria-label="Observation Setup">
             <div class="setup-grid">
                 <div class="form-group">
-                    <label>Student Name</label>
-                    <input type="text" id="studentName" placeholder="Enter student name">
+                    <label for="studentName">Student Name</label>
+                    <input type="text" id="studentName" placeholder="Enter student name" aria-required="true">
                 </div>
                 <div class="form-group">
-                    <label>Observer</label>
+                    <label for="observerName">Observer</label>
                     <input type="text" id="observerName" placeholder="Enter your name">
                 </div>
                 <div class="form-group">
-                    <label>Date</label>
-                    <input type="date" id="observationDate">
+                    <label for="observationDate">Date</label>
+                    <input type="date" id="observationDate" aria-label="Observation date">
                 </div>
                 <div class="form-group">
-                    <label>Duration (minutes)</label>
-                    <select id="duration">
+                    <label for="duration">Duration (minutes)</label>
+                    <select id="duration" aria-label="Observation duration">
                         <option value="5">5 minutes</option>
                         <option value="10">10 minutes</option>
                         <option value="15" selected>15 minutes</option>
@@ -1067,9 +1338,9 @@
         </section>
 
         <!-- Timer Section -->
-        <section class="timer-section" id="timerSection">
-            <div class="timer-display" id="timerDisplay">00:00</div>
-            <div class="interval-indicator">
+        <section class="timer-section" id="timerSection" role="timer" aria-label="Observation Timer">
+            <div class="timer-display" id="timerDisplay" aria-live="polite" aria-atomic="true">00:00</div>
+            <div class="interval-indicator" aria-live="polite">
                 Interval: <span id="currentInterval">0</span> / <span id="totalIntervals">0</span>
             </div>
             <div class="observation-counts">
@@ -1098,6 +1369,9 @@
                 </button>
                 <button class="btn btn-secondary" onclick="resetObservation()">
                     ↻ Reset
+                </button>
+                <button class="btn btn-secondary" onclick="openSessionManager()">
+                    💾 Sessions
                 </button>
             </div>
         </section>
@@ -1135,12 +1409,12 @@
                         <div class="category-group on-task">
                             <h4>ON-TASK</h4>
                             <div class="behavior-grid">
-                                <button class="behavior-btn btn-aet" id="btn-AET" onclick="recordBehavior('AET')" disabled>
-                                    <span class="code">1 AET</span>
+                                <button class="behavior-btn btn-aet" id="btn-AET" onclick="recordBehavior('AET')" disabled aria-label="Record AET - Active Engaged Time" role="button">
+                                    <span class="code" aria-hidden="true">1 AET</span>
                                     <span class="label">Active Engagement</span>
                                 </button>
-                                <button class="behavior-btn btn-pet" id="btn-PET" onclick="recordBehavior('PET')" disabled>
-                                    <span class="code">2 PET</span>
+                                <button class="behavior-btn btn-pet" id="btn-PET" onclick="recordBehavior('PET')" disabled aria-label="Record PET - Passive Engaged Time" role="button">
+                                    <span class="code" aria-hidden="true">2 PET</span>
                                     <span class="label">Passive Engagement</span>
                                 </button>
                             </div>
@@ -1148,16 +1422,16 @@
                         <div class="category-group off-task">
                             <h4>OFF-TASK</h4>
                             <div class="behavior-grid">
-                                <button class="behavior-btn btn-oft-m" id="btn-OFT-M" onclick="recordBehavior('OFT-M')" disabled>
-                                    <span class="code">3 OFT-M</span>
+                                <button class="behavior-btn btn-oft-m" id="btn-OFT-M" onclick="recordBehavior('OFT-M')" disabled aria-label="Record OFT-M - Off-Task Motor" role="button">
+                                    <span class="code" aria-hidden="true">3 OFT-M</span>
                                     <span class="label">Motor</span>
                                 </button>
-                                <button class="behavior-btn btn-oft-v" id="btn-OFT-V" onclick="recordBehavior('OFT-V')" disabled>
-                                    <span class="code">4 OFT-V</span>
+                                <button class="behavior-btn btn-oft-v" id="btn-OFT-V" onclick="recordBehavior('OFT-V')" disabled aria-label="Record OFT-V - Off-Task Verbal" role="button">
+                                    <span class="code" aria-hidden="true">4 OFT-V</span>
                                     <span class="label">Verbal</span>
                                 </button>
-                                <button class="behavior-btn btn-oft-p" id="btn-OFT-P" onclick="recordBehavior('OFT-P')" disabled>
-                                    <span class="code">5 OFT-P</span>
+                                <button class="behavior-btn btn-oft-p" id="btn-OFT-P" onclick="recordBehavior('OFT-P')" disabled aria-label="Record OFT-P - Off-Task Passive" role="button">
+                                    <span class="code" aria-hidden="true">5 OFT-P</span>
                                     <span class="label">Passive</span>
                                 </button>
                             </div>
@@ -1243,6 +1517,123 @@
         <span id="toastMessage">Action completed!</span>
     </div>
 
+    <!-- Session Manager Modal -->
+    <div class="modal" id="sessionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Session Manager</h2>
+                <button class="modal-close" onclick="closeSessionManager()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <h3>Current Session</h3>
+                    <button class="btn btn-primary" onclick="saveCurrentSession()">Save Current Session</button>
+                </div>
+                <div class="modal-section">
+                    <h3>Saved Sessions</h3>
+                    <div id="sessionList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button class="modal-close" onclick="closeSettings()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-group">
+                    <label>Interval Length (seconds)</label>
+                    <select id="intervalLengthSetting" onchange="updateIntervalSetting()">
+                        <option value="10">10 seconds</option>
+                        <option value="15" selected>15 seconds</option>
+                        <option value="20">20 seconds</option>
+                        <option value="30">30 seconds</option>
+                    </select>
+                </div>
+                <div class="settings-group">
+                    <label>Alert Volume</label>
+                    <input type="range" id="volumeSetting" min="0" max="1" step="0.1" value="0.3" onchange="updateVolumeSetting()">
+                    <span id="volumeValue">30%</span>
+                </div>
+                <div class="settings-group">
+                    <label>Observation Pattern (Target : Peer)</label>
+                    <select id="patternSetting" onchange="updatePatternSetting()">
+                        <option value="3:1">3:1 (3 Target, 1 Peer)</option>
+                        <option value="4:1" selected>4:1 (4 Target, 1 Peer)</option>
+                        <option value="5:1">5:1 (5 Target, 1 Peer)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div class="modal" id="helpModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>BOSS Observation Tool - Help Guide</h2>
+                <button class="modal-close" onclick="closeHelp()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="help-section">
+                    <h3>What is BOSS?</h3>
+                    <p>BOSS (Behavioral Observation of Students in Schools) is a systematic direct observation tool used to measure student engagement in the classroom using momentary time sampling.</p>
+                </div>
+                <div class="help-section">
+                    <h3>Getting Started</h3>
+                    <ol>
+                        <li>Enter student name, observer name, and select observation duration</li>
+                        <li>Click "Start Observation" to begin the timer</li>
+                        <li>Every 15 seconds, you'll be prompted to record behavior</li>
+                        <li>Observe and record for Target Student (4x) then Comparison Peer (1x)</li>
+                        <li>Take notes throughout the observation</li>
+                    </ol>
+                </div>
+                <div class="help-section">
+                    <h3>Behavior Codes</h3>
+                    <div class="behavior-help">
+                        <h4>On-Task Behaviors:</h4>
+                        <ul>
+                            <li><strong>AET (Active Engaged Time):</strong> Actively participating in assigned activity</li>
+                            <li><strong>PET (Passive Engaged Time):</strong> Passively attending to assigned activity</li>
+                        </ul>
+                        <h4>Off-Task Behaviors:</h4>
+                        <ul>
+                            <li><strong>OFT-M (Off-Task Motor):</strong> Physical movement not related to task</li>
+                            <li><strong>OFT-V (Off-Task Verbal):</strong> Verbal behavior not related to task</li>
+                            <li><strong>OFT-P (Off-Task Passive):</strong> Not engaged, not disruptive</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="help-section">
+                    <h3>Keyboard Shortcuts</h3>
+                    <ul>
+                        <li><kbd>Ctrl+1</kbd> - Record AET</li>
+                        <li><kbd>Ctrl+2</kbd> - Record PET</li>
+                        <li><kbd>Ctrl+3</kbd> - Record OFT-M</li>
+                        <li><kbd>Ctrl+4</kbd> - Record OFT-V</li>
+                        <li><kbd>Ctrl+5</kbd> - Record OFT-P</li>
+                        <li><kbd>1-5</kbd> - Same behaviors when not typing</li>
+                    </ul>
+                </div>
+                <div class="help-section">
+                    <h3>Tips for Accurate Observations</h3>
+                    <ul>
+                        <li>Position yourself where you can see both students clearly</li>
+                        <li>Record the behavior at the exact moment the beep sounds</li>
+                        <li>Do not average behavior over the interval</li>
+                        <li>Maintain objectivity - record what you see, not interpretations</li>
+                        <li>Use notes to capture context and important details</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // State
         let isRunning = false;
@@ -1257,14 +1648,158 @@
         let chart = null;
         let secondsUntilNextInterval = 15;
         let isNotesFieldFocused = false;
+        let settings = {
+            intervalLength: 15,
+            volume: 0.3,
+            theme: 'dark',
+            observationPattern: '4:1' // 4 target : 1 peer
+        };
+
+        // LocalStorage keys
+        const STORAGE_KEYS = {
+            CURRENT_SESSION: 'boss_current_session',
+            SAVED_SESSIONS: 'boss_saved_sessions',
+            SETTINGS: 'boss_settings'
+        };
+
+        // Load settings from localStorage
+        function loadSettings() {
+            const saved = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+            if (saved) {
+                settings = { ...settings, ...JSON.parse(saved) };
+            }
+        }
+
+        // Save settings to localStorage
+        function saveSettings() {
+            localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
+        }
+
+        // Auto-save current session
+        function autoSaveSession() {
+            const sessionData = {
+                studentName: document.getElementById('studentName').value,
+                observerName: document.getElementById('observerName').value,
+                observationDate: document.getElementById('observationDate').value,
+                duration: document.getElementById('duration').value,
+                notes: document.getElementById('observationNotes').value,
+                observations: observations,
+                currentSeconds: currentSeconds,
+                currentInterval: currentInterval,
+                cyclePosition: cyclePosition,
+                isRunning: isRunning,
+                isPaused: isPaused,
+                timestamp: new Date().toISOString()
+            };
+            localStorage.setItem(STORAGE_KEYS.CURRENT_SESSION, JSON.stringify(sessionData));
+        }
+
+        // Load current session
+        function loadCurrentSession() {
+            const saved = localStorage.getItem(STORAGE_KEYS.CURRENT_SESSION);
+            if (saved) {
+                return JSON.parse(saved);
+            }
+            return null;
+        }
+
+        // Clear current session
+        function clearCurrentSession() {
+            localStorage.removeItem(STORAGE_KEYS.CURRENT_SESSION);
+        }
+
+        // Restore session
+        function restoreSession(sessionData) {
+            document.getElementById('studentName').value = sessionData.studentName || '';
+            document.getElementById('observerName').value = sessionData.observerName || '';
+            document.getElementById('observationDate').value = sessionData.observationDate || '';
+            document.getElementById('duration').value = sessionData.duration || '15';
+            document.getElementById('observationNotes').value = sessionData.notes || '';
+
+            observations = sessionData.observations || [];
+            currentSeconds = sessionData.currentSeconds || 0;
+            currentInterval = sessionData.currentInterval || 0;
+            cyclePosition = sessionData.cyclePosition || 0;
+
+            updateTotalIntervals();
+            updateDataTable();
+            updateStats();
+            updateChart();
+            updateObservationCounts();
+            updateTimerDisplay();
+
+            if (sessionData.observations && sessionData.observations.length > 0) {
+                showToast(`Restored session with ${sessionData.observations.length} observations`);
+            }
+        }
+
+        // Save session to library
+        function saveSessionToLibrary(sessionName) {
+            const sessionData = {
+                name: sessionName || `${document.getElementById('studentName').value} - ${document.getElementById('observationDate').value}`,
+                studentName: document.getElementById('studentName').value,
+                observerName: document.getElementById('observerName').value,
+                observationDate: document.getElementById('observationDate').value,
+                duration: document.getElementById('duration').value,
+                notes: document.getElementById('observationNotes').value,
+                observations: observations,
+                timestamp: new Date().toISOString()
+            };
+
+            const saved = localStorage.getItem(STORAGE_KEYS.SAVED_SESSIONS);
+            const sessions = saved ? JSON.parse(saved) : [];
+            sessions.push(sessionData);
+            localStorage.setItem(STORAGE_KEYS.SAVED_SESSIONS, JSON.stringify(sessions));
+
+            showToast('Session saved to library!');
+            return sessionData;
+        }
+
+        // Get all saved sessions
+        function getSavedSessions() {
+            const saved = localStorage.getItem(STORAGE_KEYS.SAVED_SESSIONS);
+            return saved ? JSON.parse(saved) : [];
+        }
+
+        // Delete session from library
+        function deleteSession(index) {
+            const sessions = getSavedSessions();
+            sessions.splice(index, 1);
+            localStorage.setItem(STORAGE_KEYS.SAVED_SESSIONS, JSON.stringify(sessions));
+        }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('observationDate').valueAsDate = new Date();
+            loadSettings();
             updateTotalIntervals();
             initChart();
 
-            document.getElementById('duration').addEventListener('change', updateTotalIntervals);
+            // Check for saved session and prompt to restore
+            const savedSession = loadCurrentSession();
+            if (savedSession && savedSession.observations && savedSession.observations.length > 0) {
+                if (confirm(`Found a previous session with ${savedSession.observations.length} observations from ${new Date(savedSession.timestamp).toLocaleString()}. Would you like to restore it?`)) {
+                    restoreSession(savedSession);
+                } else {
+                    clearCurrentSession();
+                }
+            }
+
+            document.getElementById('duration').addEventListener('change', () => {
+                updateTotalIntervals();
+                autoSaveSession();
+            });
+
+            // Auto-save notes as user types
+            const notesField = document.getElementById('observationNotes');
+            notesField.addEventListener('input', () => {
+                autoSaveSession();
+            });
+
+            // Auto-save form fields
+            document.getElementById('studentName').addEventListener('input', autoSaveSession);
+            document.getElementById('observerName').addEventListener('input', autoSaveSession);
+            document.getElementById('observationDate').addEventListener('change', autoSaveSession);
 
             // Handle sticky info bar on scroll
             let timerSection = document.getElementById('timerSection');
@@ -1281,7 +1816,6 @@
             });
 
             // Track if notes field is focused
-            const notesField = document.getElementById('observationNotes');
             notesField.addEventListener('focus', () => {
                 isNotesFieldFocused = true;
             });
@@ -1328,8 +1862,9 @@
 
         function updateTotalIntervals() {
             const duration = parseInt(document.getElementById('duration').value);
-            // 15-second intervals = 4 intervals per minute
-            totalIntervals = duration * 4;
+            // Calculate intervals based on interval length setting
+            const intervalsPerMinute = 60 / settings.intervalLength;
+            totalIntervals = Math.floor(duration * intervalsPerMinute);
             document.getElementById('totalIntervals').textContent = totalIntervals;
             document.getElementById('stickyTotalIntervals').textContent = totalIntervals;
         }
@@ -1469,8 +2004,8 @@
                     updateTimerDisplay();
                     updateCountdown();
 
-                    // Every 15 seconds, prompt for observation
-                    if (currentSeconds % 15 === 0 && currentSeconds > 0) {
+                    // Every interval, prompt for observation
+                    if (currentSeconds % settings.intervalLength === 0 && currentSeconds > 0) {
                         promptForObservation();
                     }
                 }
@@ -1478,8 +2013,9 @@
         }
 
         function updateCountdown() {
-            secondsUntilNextInterval = 15 - (currentSeconds % 15);
-            if (secondsUntilNextInterval === 15 && currentSeconds > 0) {
+            const intervalLength = settings.intervalLength;
+            secondsUntilNextInterval = intervalLength - (currentSeconds % intervalLength);
+            if (secondsUntilNextInterval === intervalLength && currentSeconds > 0) {
                 secondsUntilNextInterval = 0;
             }
 
@@ -1535,6 +2071,8 @@
         }
 
         function playIntervalSound() {
+            if (settings.volume === 0) return; // Muted
+
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
             const oscillator = audioContext.createOscillator();
             const gainNode = audioContext.createGain();
@@ -1542,10 +2080,11 @@
             oscillator.connect(gainNode);
             gainNode.connect(audioContext.destination);
 
-            oscillator.frequency.value = 800;
+            // Different frequencies for target vs peer
+            oscillator.frequency.value = isTargetTurn() ? 800 : 600;
             oscillator.type = 'sine';
-            
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+
+            gainNode.gain.setValueAtTime(settings.volume, audioContext.currentTime);
             gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
 
             oscillator.start(audioContext.currentTime);
@@ -1568,6 +2107,7 @@
             updateStats();
             updateChart();
             updateObservationCounts();
+            autoSaveSession();
 
             // Hide the alert banner
             document.getElementById('recordAlert').classList.remove('show', 'peer-turn');
@@ -1587,7 +2127,7 @@
             updateTurnDisplay();
 
             // Reset countdown display
-            document.getElementById('countdownNumber').textContent = '15';
+            document.getElementById('countdownNumber').textContent = settings.intervalLength.toString();
             document.getElementById('countdownDisplay').classList.remove('warning', 'urgent');
 
             waitingForInput = false;
@@ -1675,7 +2215,7 @@
             document.getElementById('chartSubtitle').textContent =
                 'Target Student n=0 • Comparison Peer n=0 • interval=15s';
             document.getElementById('pauseBtn').innerHTML = '⏸ Pause';
-            document.getElementById('countdownNumber').textContent = '15';
+            document.getElementById('countdownNumber').textContent = settings.intervalLength.toString();
             document.getElementById('countdownDisplay').classList.remove('warning', 'urgent');
             document.getElementById('recordAlert').classList.remove('show', 'peer-turn');
             document.getElementById('recordingSection').classList.remove('alert-active', 'peer-alert');
@@ -1683,6 +2223,7 @@
             updateDataTable();
             updateStats();
             resetChart();
+            clearCurrentSession();
         }
 
         function updateTimerDisplay() {
@@ -1923,6 +2464,121 @@
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
+
+        // Session Manager Functions
+        function openSessionManager() {
+            document.getElementById('sessionModal').classList.add('show');
+            refreshSessionList();
+        }
+
+        function closeSessionManager() {
+            document.getElementById('sessionModal').classList.remove('show');
+        }
+
+        function saveCurrentSession() {
+            const studentName = document.getElementById('studentName').value;
+            if (!studentName) {
+                showToast('Please enter a student name first');
+                return;
+            }
+
+            const sessionName = prompt('Enter a name for this session:', `${studentName} - ${document.getElementById('observationDate').value}`);
+            if (sessionName) {
+                saveSessionToLibrary(sessionName);
+                refreshSessionList();
+            }
+        }
+
+        function refreshSessionList() {
+            const sessions = getSavedSessions();
+            const listEl = document.getElementById('sessionList');
+
+            if (sessions.length === 0) {
+                listEl.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">No saved sessions yet</p>';
+                return;
+            }
+
+            listEl.innerHTML = sessions.map((session, index) => `
+                <div class="session-item">
+                    <div class="session-info">
+                        <div class="session-name">${session.name}</div>
+                        <div class="session-meta">
+                            ${session.observations.length} observations • ${new Date(session.timestamp).toLocaleDateString()}
+                        </div>
+                    </div>
+                    <div class="session-actions">
+                        <button class="btn btn-primary btn-small" onclick="loadSession(${index})">Load</button>
+                        <button class="btn btn-danger btn-small" onclick="confirmDeleteSession(${index})">Delete</button>
+                    </div>
+                </div>
+            `).reverse().join('');
+        }
+
+        function loadSession(index) {
+            const sessions = getSavedSessions();
+            const session = sessions[index];
+            if (session) {
+                restoreSession(session);
+                closeSessionManager();
+            }
+        }
+
+        function confirmDeleteSession(index) {
+            if (confirm('Are you sure you want to delete this session?')) {
+                deleteSession(index);
+                refreshSessionList();
+                showToast('Session deleted');
+            }
+        }
+
+        // Settings Functions
+        function openSettings() {
+            document.getElementById('settingsModal').classList.add('show');
+            document.getElementById('intervalLengthSetting').value = settings.intervalLength;
+            document.getElementById('volumeSetting').value = settings.volume;
+            document.getElementById('volumeValue').textContent = Math.round(settings.volume * 100) + '%';
+            document.getElementById('patternSetting').value = settings.observationPattern;
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.remove('show');
+        }
+
+        function updateIntervalSetting() {
+            settings.intervalLength = parseInt(document.getElementById('intervalLengthSetting').value);
+            saveSettings();
+            showToast('Interval length updated. Will apply to next observation.');
+        }
+
+        function updateVolumeSetting() {
+            settings.volume = parseFloat(document.getElementById('volumeSetting').value);
+            document.getElementById('volumeValue').textContent = Math.round(settings.volume * 100) + '%';
+            saveSettings();
+        }
+
+        function updatePatternSetting() {
+            settings.observationPattern = document.getElementById('patternSetting').value;
+            saveSettings();
+            showToast('Observation pattern updated. Will apply to next observation.');
+        }
+
+        // Help Functions
+        function openHelp() {
+            document.getElementById('helpModal').classList.add('show');
+        }
+
+        function closeHelp() {
+            document.getElementById('helpModal').classList.remove('show');
+        }
+
+        // Close modals on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeSessionManager();
+                closeSettings();
+                closeHelp();
+            }
+        });
     </script>
 </body>
 </html>
