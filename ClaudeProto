@@ -1728,6 +1728,13 @@
             updateObservationCounts();
             updateTimerDisplay();
 
+            // Update interval displays
+            document.getElementById('currentInterval').textContent = currentInterval;
+            document.getElementById('stickyCurrentInterval').textContent = currentInterval;
+
+            // Update turn display
+            updateTurnDisplay();
+
             if (sessionData.observations && sessionData.observations.length > 0) {
                 showToast(`Restored session with ${sessionData.observations.length} observations`);
             }
@@ -1743,6 +1750,9 @@
                 duration: document.getElementById('duration').value,
                 notes: document.getElementById('observationNotes').value,
                 observations: observations,
+                currentSeconds: currentSeconds,
+                currentInterval: currentInterval,
+                cyclePosition: cyclePosition,
                 timestamp: new Date().toISOString()
             };
 
@@ -2498,12 +2508,15 @@
                 return;
             }
 
-            listEl.innerHTML = sessions.map((session, index) => `
+            listEl.innerHTML = sessions.map((session, index) => {
+                const elapsed = session.currentSeconds ? formatTime(session.currentSeconds) : '0:00';
+                const intervalInfo = session.currentInterval ? `${session.currentInterval} intervals` : `${session.observations.length} observations`;
+                return `
                 <div class="session-item">
                     <div class="session-info">
                         <div class="session-name">${session.name}</div>
                         <div class="session-meta">
-                            ${session.observations.length} observations • ${new Date(session.timestamp).toLocaleDateString()}
+                            ${intervalInfo} • ${elapsed} elapsed • ${new Date(session.timestamp).toLocaleDateString()}
                         </div>
                     </div>
                     <div class="session-actions">
@@ -2511,7 +2524,7 @@
                         <button class="btn btn-danger btn-small" onclick="confirmDeleteSession(${index})">Delete</button>
                     </div>
                 </div>
-            `).reverse().join('');
+            `}).reverse().join('');
         }
 
         function loadSession(index) {
