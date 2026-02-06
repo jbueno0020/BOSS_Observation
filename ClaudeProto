@@ -812,13 +812,19 @@
         .chart-wrapper {
             background: #ffffff;
             border-radius: 12px;
-            padding: 20px;
+            padding: 30px;
             margin-bottom: 20px;
+            max-width: 1100px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .chart-container {
             position: relative;
-            height: 400px;
+            height: 600px;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
         }
 
         .chart-subtitle {
@@ -1234,6 +1240,14 @@
 
             .chart-actions .btn {
                 flex: 1;
+            }
+
+            .chart-container {
+                height: 400px;
+            }
+
+            .chart-wrapper {
+                padding: 20px;
             }
         }
 
@@ -1935,18 +1949,18 @@
                             display: true,
                             text: 'Behavioral Observation of Students in Schools',
                             color: '#333',
-                            font: { 
-                                family: 'DM Sans', 
-                                size: 18,
+                            font: {
+                                family: 'DM Sans',
+                                size: 22,
                                 weight: '600'
                             },
-                            padding: { bottom: 20 }
+                            padding: { bottom: 25 }
                         },
                         legend: {
                             position: 'bottom',
                             labels: {
                                 color: '#333',
-                                font: { family: 'DM Sans', size: 12 },
+                                font: { family: 'DM Sans', size: 14 },
                                 padding: 20,
                                 usePointStyle: true,
                                 pointStyle: 'rect'
@@ -1958,7 +1972,7 @@
                             color: '#333',
                             font: {
                                 family: 'DM Sans',
-                                size: 11,
+                                size: 13,
                                 weight: '600'
                             },
                             formatter: (value) => value > 0 ? value : ''
@@ -1967,9 +1981,9 @@
                     scales: {
                         x: {
                             grid: { display: false },
-                            ticks: { 
-                                color: '#333', 
-                                font: { family: 'DM Sans', size: 11, weight: '500' }
+                            ticks: {
+                                color: '#333',
+                                font: { family: 'DM Sans', size: 13, weight: '500' }
                             }
                         },
                         y: {
@@ -1979,12 +1993,12 @@
                                 display: true,
                                 text: '% of Intervals Observed',
                                 color: '#666',
-                                font: { family: 'DM Sans', size: 12 }
+                                font: { family: 'DM Sans', size: 14, weight: '500' }
                             },
                             grid: { color: 'rgba(0, 0, 0, 0.1)' },
-                            ticks: { 
-                                color: '#666', 
-                                font: { family: 'DM Sans' },
+                            ticks: {
+                                color: '#666',
+                                font: { family: 'DM Sans', size: 12 },
                                 stepSize: 10
                             }
                         }
@@ -2395,12 +2409,12 @@
             canvas.toBlob(blob => {
                 const item = new ClipboardItem({ 'image/png': blob });
                 navigator.clipboard.write([item]).then(() => {
-                    showToast('Chart copied to clipboard!');
+                    showToast('Chart copied to clipboard! Ready to paste into Word.');
                 }).catch(err => {
                     showToast('Failed to copy chart');
                     console.error(err);
                 });
-            });
+            }, 'image/png', 1.0);
         }
 
         function downloadChart() {
@@ -2409,7 +2423,8 @@
             const studentName = document.getElementById('studentName').value || 'observation';
             const date = document.getElementById('observationDate').value;
             link.download = `BOSS_${studentName}_${date}.png`;
-            link.href = canvas.toDataURL('image/png');
+            // Export at higher quality for better Word document compatibility
+            link.href = canvas.toDataURL('image/png', 1.0);
             link.click();
             showToast('Chart downloaded!');
         }
