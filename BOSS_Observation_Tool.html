@@ -1928,13 +1928,13 @@
             document.getElementById('observationDate').addEventListener('change', autoSaveSession);
 
             // Handle sticky info bar on scroll
-            let behaviorHeader = document.querySelector('.behavior-header');
+            let timerSection = document.getElementById('timerSection');
             let stickyBar = document.getElementById('stickyInfoBar');
 
             window.addEventListener('scroll', () => {
-                let headerRect = behaviorHeader.getBoundingClientRect();
-                // Show sticky bar when behavior header (with countdown) scrolls above viewport
-                if (headerRect.bottom < 0 && isRunning) {
+                let timerRect = timerSection.getBoundingClientRect();
+                // Show sticky bar when timer section (with control buttons) scrolls above viewport
+                if (timerRect.bottom < 0 && isRunning) {
                     stickyBar.classList.add('show');
                 } else {
                     stickyBar.classList.remove('show');
