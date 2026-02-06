@@ -1,0 +1,324 @@
+═══════════════════════════════════════════════════════════════════════
+    TEACHERS PAY TEACHERS - COMPLETE LISTING GUIDE
+═══════════════════════════════════════════════════════════════════════
+
+Follow these steps to list your BOSS Observation Tool on TpT:
+
+═══════════════════════════════════════════════════════════════════════
+    PHASE 1: ACCOUNT SETUP (15 minutes)
+═══════════════════════════════════════════════════════════════════════
+
+□ Step 1: Create Seller Account
+   • Go to TeachersPayTeachers.com
+   • Click "Sell on TpT" at the top
+   • Sign up or login
+   • Complete profile (bio, photo, store name)
+
+□ Step 2: Tax Information
+   • Click "My Earnings" → "Payment Settings"
+   • Complete W-9 form (US sellers) or W-8BEN (international)
+   • Add payment method (PayPal or direct deposit)
+
+□ Step 3: Store Setup
+   • Choose store name (can be your name or business name)
+   • Write store description (what you offer)
+   • Add profile picture (professional headshot or logo)
+
+═══════════════════════════════════════════════════════════════════════
+    PHASE 2: PREPARE MARKETING MATERIALS (2-3 hours)
+═══════════════════════════════════════════════════════════════════════
+
+□ Step 4: Take Screenshots
+   You need 4-6 high-quality screenshots:
+
+   Screenshot 1: Main timer display
+   • Show the tool with student info filled in
+   • Timer running at around 05:30
+   • Interval: 22/60
+   • Counts visible (Target n=18, Peer n=4)
+
+   Screenshot 2: RECORD NOW alert active
+   • Show the blue "RECORD NOW! TARGET STUDENT" banner
+   • Behavior buttons visible
+   • Notes field with sample text
+
+   Screenshot 3: Chart/Graph
+   • Show completed observation with data
+   • Professional chart displayed
+   • Clear percentages visible
+
+   Screenshot 4: Data table
+   • Show observation data table
+   • Multiple entries visible
+   • Summary statistics showing
+
+   Screenshot 5: Session manager (optional)
+   • Show saved sessions list
+   • Multiple sessions with dates
+
+   Screenshot 6: Settings modal (optional)
+   • Show customization options
+
+   HOW TO TAKE SCREENSHOTS:
+   • Windows: Windows + Shift + S
+   • Mac: Cmd + Shift + 4
+   • Save as PNG files
+   • Use light mode for better visibility (click 🌙 button)
+
+□ Step 5: Create Preview PDF
+   • Open PowerPoint or Google Slides
+   • Create 8-10 slides:
+     Slide 1: Title + "PREVIEW ONLY" watermark
+     Slide 2: Table of contents
+     Slide 3-8: Screenshots with descriptions
+     Slide 9: Feature list
+     Slide 10: "Purchase to download full tool"
+   • Export as PDF
+   • Name: BOSS_Tool_PREVIEW.pdf
+
+   IMPORTANT: Do NOT include the actual HTML file in preview!
+
+□ Step 6: Create Thumbnail Image
+   • Size: 500x500 pixels minimum (1000x1000 recommended)
+   • Use Canva.com (free) or Photoshop
+   • Include text: "BOSS Observation Tool"
+   • Add subtitle: "Digital Behavior Tracking"
+   • Use professional colors (blues, greens)
+   • Make it eye-catching but professional
+   • Export as PNG or JPG
+
+□ Step 7: Record Video Tutorial (Optional but Recommended)
+   • 5-10 minute walkthrough
+   • Use Loom.com (free) or screen recording software
+   • Show: Setup → Start → Record → Export
+   • Upload to YouTube (unlisted)
+   • Add link in product description
+
+═══════════════════════════════════════════════════════════════════════
+    PHASE 3: CREATE THE DOWNLOAD ZIP (10 minutes)
+═══════════════════════════════════════════════════════════════════════
+
+□ Step 8: Package Files
+   Create a ZIP file containing:
+   ✓ BOSS_Observation_Tool.html
+   ✓ README.txt
+   ✓ Quick_Start.txt
+   ✓ LICENSE.txt
+   ✓ CHANGELOG.txt
+
+   Name it: BOSS_Observation_Tool_v1.0.zip
+
+   Windows: Right-click files → Send to → Compressed folder
+   Mac: Select files → Right-click → Compress
+
+□ Step 9: Test the ZIP
+   • Extract to a new folder
+   • Open BOSS_Observation_Tool.html
+   • Test all features work
+   • Do a complete 5-minute observation test
+
+═══════════════════════════════════════════════════════════════════════
+    PHASE 4: CREATE TpT LISTING (30 minutes)
+═══════════════════════════════════════════════════════════════════════
+
+□ Step 10: Start New Product
+   • Login to TpT
+   • Click "My Products" → "Add New Product"
+   • Choose "Original Product"
+
+□ Step 11: Basic Information
+
+   TITLE (copy from TpT_Product_Description.txt):
+   "BOSS Observation Tool - Digital Behavioral Observation Time Sampling for Schools"
+
+   DESCRIPTION (copy from TpT_Product_Description.txt):
+   [Paste the full description provided]
+
+   PRICE:
+   • Start with $15.99
+   • Can adjust based on sales
+   • Consider launch discount: $12.99 for first week
+
+□ Step 12: File Upload
+
+   PRODUCT FILE (what buyers download):
+   • Upload: BOSS_Observation_Tool_v1.0.zip
+
+   PREVIEW FILE (what buyers see before purchase):
+   • Upload: BOSS_Tool_PREVIEW.pdf
+
+□ Step 13: Thumbnail & Cover
+   • Upload your thumbnail image (500x500+)
+   • TpT will generate additional sizes
+
+□ Step 14: Categories & Tags
+
+   GRADE LEVELS (select all that apply):
+   ☑ PreK, K, 1st, 2nd, 3rd, 4th, 5th, 6th
+   ☑ 7th, 8th, 9th, 10th, 11th, 12th
+   ☑ Higher Education, Adult Education
+   ☑ Homeschool, Staff
+
+   RESOURCE TYPE:
+   ☑ Assessment
+   ☑ Professional Development
+   ☑ Technology
+
+   CATEGORIES:
+   • Assessment
+   • Special Education
+   • Classroom Management
+
+   STANDARDS:
+   • None (this is a professional tool)
+
+   TAGS (choose 10-15):
+   • BOSS observation
+   • behavioral observation
+   • momentary time sampling
+   • school psychology
+   • FBA
+   • functional behavior assessment
+   • RTI
+   • MTSS
+   • special education
+   • behavior tracking
+   • student engagement
+   • classroom observation
+   • BCBA
+   • behavior specialist
+   • direct observation
+
+□ Step 15: Terms of Use
+   • Select "Single User License"
+   • Paste content from LICENSE.txt into terms section
+   • Note that School/District licenses available separately
+
+□ Step 16: Additional Options
+   • NO to "Can be edited?"
+   • File type: HTML, TXT
+   • Number of pages: "N/A - Digital Tool"
+
+═══════════════════════════════════════════════════════════════════════
+    PHASE 5: LAUNCH & PROMOTE (Ongoing)
+═══════════════════════════════════════════════════════════════════════
+
+□ Step 17: Preview & Publish
+   • Click "Preview Product"
+   • Check everything looks professional
+   • Read through entire description
+   • Test download link
+   • Click "Publish" when ready!
+
+□ Step 18: Share Your Product
+   • TpT provides sharing links
+   • Share on:
+     - Facebook groups for school psychologists
+     - Twitter (#schoolpsych #specialed)
+     - LinkedIn (tag school psychology groups)
+     - Reddit (r/schoolpsychology)
+     - Your school district (if allowed)
+
+   SAMPLE POST:
+   "Just launched a digital BOSS observation tool for school psychs!
+    Automated timing, instant charts, exports to Word. Makes FBAs
+    so much easier! Check it out: [link]"
+
+□ Step 19: Request Reviews
+   • After first 5 sales, ask buyers to leave reviews
+   • Respond to all questions within 24 hours
+   • Be helpful and professional
+
+□ Step 20: Monitor & Improve
+   • Check sales dashboard weekly
+   • Read feedback carefully
+   • Update based on suggestions
+   • Release updates (TpT notifies buyers)
+
+═══════════════════════════════════════════════════════════════════════
+    PRICING STRATEGY
+═══════════════════════════════════════════════════════════════════════
+
+LAUNCH PRICING:
+Week 1: $12.99 (introductory offer)
+Week 2+: $15.99 (regular price)
+
+BUNDLE OPTIONS (create later):
+• BOSS Tool + FBA Templates: $24.99
+• Complete Assessment Bundle: $39.99
+
+SCHOOL LICENSE:
+• Create separate listing: $79.99 for up to 50 users
+• Include district pricing option
+
+SALES & PROMOTIONS:
+• TpT site-wide sales (4x/year): 20% off
+• Your custom sales: Consider Back-to-School, New Year
+
+═══════════════════════════════════════════════════════════════════════
+    EXPECTED TIMELINE
+═══════════════════════════════════════════════════════════════════════
+
+Day 1: Account setup, screenshots, preview PDF
+Day 2: Create listing, upload files
+Day 3: Publish and share on social media
+Week 1: Monitor feedback, respond to questions
+Week 2-4: Build reviews (goal: 10+ reviews)
+Month 2+: Create additional products/bundles
+
+═══════════════════════════════════════════════════════════════════════
+    SUCCESS METRICS
+═══════════════════════════════════════════════════════════════════════
+
+GOOD LAUNCH:
+• 10-20 sales in first month
+• 4+ stars average rating
+• 5+ positive reviews
+• $150-300 revenue
+
+GREAT LAUNCH:
+• 50+ sales in first month
+• 4.5+ stars average
+• 20+ reviews
+• $750+ revenue
+
+═══════════════════════════════════════════════════════════════════════
+    TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════════════
+
+Q: How long does TpT approval take?
+A: Usually 24-48 hours for first product
+
+Q: What if my product gets rejected?
+A: TpT will explain why. Common issues:
+   - Copyright concerns (use original screenshots)
+   - Terms of use missing
+   - Preview file not clear enough
+
+Q: Can I update after publishing?
+A: Yes! Update anytime. Buyers get notified of updates.
+
+Q: How do I handle support questions?
+A: Respond through TpT messaging within 48 hours
+   Be helpful and professional
+   Offer solutions or refunds if needed
+
+═══════════════════════════════════════════════════════════════════════
+    NEXT STEPS
+═══════════════════════════════════════════════════════════════════════
+
+☐ Create TpT account
+☐ Take screenshots
+☐ Create preview PDF
+☐ Make thumbnail
+☐ Create ZIP file
+☐ Upload to TpT
+☐ Publish listing
+☐ Share on social media
+☐ Monitor sales & feedback
+
+═══════════════════════════════════════════════════════════════════════
+
+READY TO LAUNCH? LET'S GO! 🚀
+
+═══════════════════════════════════════════════════════════════════════
