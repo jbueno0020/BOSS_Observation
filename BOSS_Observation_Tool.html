@@ -1,0 +1,2667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOSS Observation Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0f1419;
+            --bg-secondary: #1a1f26;
+            --bg-card: #232a33;
+            --bg-hover: #2d3640;
+            --text-primary: #f5f5f7;
+            --text-secondary: #8b949e;
+            --text-muted: #6e7681;
+            --accent-blue: #4a90d9;
+            --accent-green: #5cb85c;
+            --accent-yellow: #d29922;
+            --accent-orange: #db6d28;
+            --accent-red: #f85149;
+            --accent-purple: #a371f7;
+            --border: #30363d;
+            --shadow: rgba(0, 0, 0, 0.4);
+        }
+
+        /* Light Mode Theme */
+        body.light-mode {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f6f8fa;
+            --bg-card: #ffffff;
+            --bg-hover: #f0f0f0;
+            --text-primary: #24292f;
+            --text-secondary: #57606a;
+            --text-muted: #6e7781;
+            --accent-blue: #0969da;
+            --accent-green: #1a7f37;
+            --accent-yellow: #bf8700;
+            --accent-orange: #bc4c00;
+            --accent-red: #cf222e;
+            --accent-purple: #8250df;
+            --border: #d0d7de;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Setup Panel */
+        .setup-panel {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px var(--shadow);
+        }
+
+        .setup-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.15);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Timer Display */
+        .timer-section {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+            text-align: center;
+            box-shadow: 0 1px 3px var(--shadow);
+        }
+
+        .timer-display {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 72px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            letter-spacing: -2px;
+        }
+
+        .timer-display.recording {
+            color: var(--accent-green);
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes soft-pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.92;
+                transform: scale(1.01);
+            }
+        }
+
+        .interval-indicator {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .interval-indicator span {
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        .observation-counts {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 16px;
+            font-size: 13px;
+        }
+
+        .count-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .count-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .count-dot.target {
+            background: var(--accent-blue);
+        }
+
+        .count-dot.peer {
+            background: var(--accent-green);
+        }
+
+        .current-turn {
+            display: inline-block;
+            padding: 12px 28px;
+            border-radius: 100px;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .current-turn.target {
+            background: rgba(74, 144, 217, 0.15);
+            color: var(--accent-blue);
+            border: 2px solid rgba(74, 144, 217, 0.4);
+        }
+
+        .current-turn.peer {
+            background: rgba(92, 184, 92, 0.15);
+            color: var(--accent-green);
+            border: 2px solid rgba(92, 184, 92, 0.4);
+        }
+
+        .turn-pattern {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .turn-pattern .active {
+            color: var(--accent-blue);
+            font-weight: 700;
+        }
+
+        .turn-pattern .active.peer {
+            color: var(--accent-green);
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #3d7fc4;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(74, 144, 217, 0.3);
+        }
+
+        .btn-danger {
+            background: var(--accent-red);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e5443d;
+        }
+
+        .btn-pause {
+            background: var(--accent-yellow);
+            color: #0f1419;
+        }
+
+        .btn-pause:hover {
+            background: #c08a1e;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(210, 153, 34, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: #3d444d;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Behavior Buttons */
+        .behavior-section {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+
+        .behavior-categories {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .category-group h4 {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .category-group.on-task h4 {
+            color: var(--accent-green);
+            border-color: rgba(92, 184, 92, 0.3);
+        }
+
+        .category-group.off-task h4 {
+            color: var(--accent-red);
+            border-color: rgba(248, 81, 73, 0.3);
+        }
+
+        .behavior-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .behavior-btn {
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+            min-height: 44px; /* Minimum touch target size */
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .behavior-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .behavior-btn .code {
+            display: block;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .behavior-btn .label {
+            font-size: 11px;
+            font-weight: 500;
+            opacity: 0.8;
+        }
+
+        /* On-Task Behaviors */
+        .btn-aet {
+            background: rgba(92, 184, 92, 0.1);
+            color: var(--accent-green);
+            border-color: rgba(92, 184, 92, 0.3);
+        }
+
+        .btn-aet:hover:not(:disabled) {
+            background: rgba(92, 184, 92, 0.2);
+            border-color: var(--accent-green);
+        }
+
+        .btn-aet.selected {
+            background: var(--accent-green);
+            color: white;
+        }
+
+        .btn-pet {
+            background: rgba(92, 184, 92, 0.1);
+            color: #7dc97d;
+            border-color: rgba(92, 184, 92, 0.2);
+        }
+
+        .btn-pet:hover:not(:disabled) {
+            background: rgba(92, 184, 92, 0.2);
+            border-color: #7dc97d;
+        }
+
+        .btn-pet.selected {
+            background: #7dc97d;
+            color: white;
+        }
+
+        /* Off-Task Behaviors */
+        .btn-oft-m {
+            background: rgba(248, 81, 73, 0.1);
+            color: var(--accent-orange);
+            border-color: rgba(248, 81, 73, 0.2);
+        }
+
+        .btn-oft-m:hover:not(:disabled) {
+            background: rgba(248, 81, 73, 0.15);
+            border-color: var(--accent-orange);
+        }
+
+        .btn-oft-m.selected {
+            background: var(--accent-orange);
+            color: white;
+        }
+
+        .btn-oft-v {
+            background: rgba(248, 81, 73, 0.1);
+            color: #e07070;
+            border-color: rgba(248, 81, 73, 0.2);
+        }
+
+        .btn-oft-v:hover:not(:disabled) {
+            background: rgba(248, 81, 73, 0.15);
+            border-color: #e07070;
+        }
+
+        .btn-oft-v.selected {
+            background: #e07070;
+            color: white;
+        }
+
+        .btn-oft-p {
+            background: rgba(248, 81, 73, 0.1);
+            color: var(--accent-red);
+            border-color: rgba(248, 81, 73, 0.3);
+        }
+
+        .btn-oft-p:hover:not(:disabled) {
+            background: rgba(248, 81, 73, 0.2);
+            border-color: var(--accent-red);
+        }
+
+        .btn-oft-p.selected {
+            background: var(--accent-red);
+            color: white;
+        }
+
+        /* Notes Section */
+        .notes-section {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+
+        /* Recording Section - Side by Side Layout */
+        .recording-section {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 3px var(--shadow);
+        }
+
+        .recording-section.alert-active {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 1px var(--accent-blue);
+        }
+
+        .recording-section.alert-active.peer-alert {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 0 1px var(--accent-green);
+        }
+
+        .recording-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .notes-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .notes-panel textarea {
+            flex: 1;
+            min-height: 280px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: inherit;
+            resize: none;
+            line-height: 1.6;
+        }
+
+        .notes-panel textarea:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.15);
+        }
+
+        .notes-panel textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .behavior-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .behavior-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .behavior-header .section-title {
+            margin-bottom: 0;
+        }
+
+        /* Countdown Display */
+        .countdown-display {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-secondary);
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .countdown-label {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .countdown-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .countdown-display.warning {
+            border-color: var(--accent-yellow);
+            background: rgba(210, 153, 34, 0.1);
+        }
+
+        .countdown-display.warning .countdown-number {
+            color: var(--accent-yellow);
+        }
+
+        .countdown-display.urgent {
+            border-color: var(--accent-red);
+            background: rgba(248, 81, 73, 0.1);
+            animation: pulse-border 0.5s ease-in-out infinite;
+        }
+
+        .countdown-display.urgent .countdown-number {
+            color: var(--accent-red);
+        }
+
+        @keyframes pulse-border {
+            0%, 100% { border-color: var(--accent-red); }
+            50% { border-color: var(--accent-orange); }
+        }
+
+        /* Record Alert Banner - Prominent pulse */
+        .record-alert {
+            display: none;
+            background: rgba(74, 144, 217, 0.15);
+            border: 2px solid var(--accent-blue);
+            border-radius: 8px;
+            padding: 10px 16px;
+            margin-bottom: 12px;
+            animation: prominent-pulse 1s ease-in-out infinite;
+        }
+
+        .record-alert.show {
+            display: block;
+        }
+
+        @keyframes prominent-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .alert-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        .alert-icon {
+            font-size: 16px;
+        }
+
+        .alert-text {
+            font-size: 18px;
+            letter-spacing: 0.5px;
+        }
+
+        .alert-subject {
+            background: rgba(74, 144, 217, 0.2);
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 16px;
+            color: var(--accent-blue);
+        }
+
+        .record-alert.peer-turn {
+            background: rgba(92, 184, 92, 0.15);
+            border-color: var(--accent-green);
+        }
+
+        .record-alert.peer-turn .alert-content {
+            color: var(--accent-green);
+        }
+
+        .record-alert.peer-turn .alert-subject {
+            background: rgba(92, 184, 92, 0.2);
+            color: var(--accent-green);
+        }
+
+        /* Keyboard Hint */
+        .keyboard-hint {
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .keyboard-hint kbd {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-primary);
+        }
+
+        /* Data Table */
+        .data-section {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px var(--shadow);
+        }
+
+        .data-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .data-stats {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stat-value.target {
+            color: var(--accent-blue);
+        }
+
+        .stat-value.peer {
+            color: var(--accent-green);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--bg-secondary);
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: var(--bg-hover);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-target {
+            background: rgba(74, 144, 217, 0.15);
+            color: var(--accent-blue);
+        }
+
+        .badge-peer {
+            background: rgba(92, 184, 92, 0.15);
+            color: var(--accent-green);
+        }
+
+        .badge-on-task {
+            background: rgba(92, 184, 92, 0.15);
+            color: var(--accent-green);
+        }
+
+        .badge-off-task {
+            background: rgba(248, 81, 73, 0.15);
+            color: var(--accent-red);
+        }
+
+        /* Chart Section */
+        .chart-section {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px var(--shadow);
+        }
+
+        .chart-wrapper {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            max-width: 1100px;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid #e5e7eb;
+        }
+
+        body.light-mode .chart-wrapper {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 600px;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .chart-subtitle {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .chart-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px 24px;
+            box-shadow: 0 8px 32px var(--shadow);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-success {
+            border-left: 4px solid var(--accent-green);
+        }
+
+        .toast-icon {
+            font-size: 20px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-large {
+            max-width: 800px;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 32px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-section {
+            margin-bottom: 24px;
+        }
+
+        .modal-section h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .session-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .session-info {
+            flex: 1;
+        }
+
+        .session-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .session-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .session-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+        }
+
+        .settings-group {
+            margin-bottom: 20px;
+        }
+
+        .settings-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .settings-group select,
+        .settings-group input[type="range"] {
+            width: 100%;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .settings-group input[type="range"] {
+            padding: 0;
+        }
+
+        .help-section {
+            margin-bottom: 24px;
+        }
+
+        .help-section h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--accent-blue);
+            margin-bottom: 12px;
+        }
+
+        .help-section h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 12px 0 8px 0;
+        }
+
+        .help-section p,
+        .help-section li {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .help-section ul,
+        .help-section ol {
+            padding-left: 24px;
+        }
+
+        .help-section kbd {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+        }
+
+        /* Sticky Info Bar */
+        .sticky-info-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-card);
+            border-bottom: 2px solid var(--border);
+            padding: 12px 24px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            box-shadow: 0 4px 12px var(--shadow);
+            animation: slideDown 0.3s ease;
+        }
+
+        .sticky-info-bar.show {
+            display: flex;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .sticky-timer {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--accent-green);
+        }
+
+        .sticky-interval {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .sticky-interval span {
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        .sticky-counts {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+        }
+
+        .sticky-count-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .recording-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .notes-panel textarea {
+                min-height: 150px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+
+            .timer-display {
+                font-size: 48px;
+            }
+
+            .behavior-categories {
+                grid-template-columns: 1fr;
+            }
+
+            .setup-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .observation-counts {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .behavior-header {
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+            }
+
+            .sticky-info-bar {
+                padding: 8px 16px;
+                flex-direction: column;
+                gap: 8px;
+                align-items: flex-start;
+            }
+
+            .sticky-timer {
+                font-size: 20px;
+            }
+
+            .sticky-counts {
+                gap: 12px;
+                font-size: 12px;
+            }
+
+            /* Mobile-specific touch improvements */
+            .behavior-btn {
+                padding: 20px 24px;
+                font-size: 14px;
+                min-height: 56px;
+            }
+
+            .behavior-btn .code {
+                font-size: 20px;
+            }
+
+            .btn {
+                padding: 16px 24px;
+                font-size: 15px;
+                min-height: 48px;
+            }
+
+            .control-buttons {
+                width: 100%;
+            }
+
+            .control-buttons .btn {
+                flex: 1;
+                min-width: 120px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .header p {
+                font-size: 13px;
+            }
+
+            .modal-content {
+                width: 95%;
+                max-height: 90vh;
+            }
+
+            .chart-actions {
+                width: 100%;
+            }
+
+            .chart-actions .btn {
+                flex: 1;
+            }
+
+            .chart-container {
+                height: 400px;
+            }
+
+            .chart-wrapper {
+                padding: 20px;
+            }
+        }
+
+        /* Tablet optimizations */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .behavior-btn {
+                padding: 18px 22px;
+                min-height: 52px;
+            }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        /* Interval Flash */
+        .interval-flash {
+            animation: flash 0.5s ease;
+        }
+
+        @keyframes flash {
+            0%, 100% { background: var(--bg-card); }
+            50% { background: rgba(74, 144, 217, 0.15); }
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+            
+            .btn, .control-buttons, .behavior-section {
+                display: none;
+            }
+            
+            .chart-section, .data-section {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sticky Info Bar (shows when scrolled) -->
+    <div class="sticky-info-bar" id="stickyInfoBar">
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <div class="sticky-timer" id="stickyTimer">00:00</div>
+            <div class="sticky-interval">
+                Interval: <span id="stickyCurrentInterval">0</span> / <span id="stickyTotalIntervals">0</span>
+            </div>
+        </div>
+        <div class="sticky-counts">
+            <div class="sticky-count-item">
+                <span class="count-dot target"></span>
+                <span>Target: <strong id="stickyTargetCount">n=0</strong></span>
+            </div>
+            <div class="sticky-count-item">
+                <span class="count-dot peer"></span>
+                <span>Peer: <strong id="stickyPeerCount">n=0</strong></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <header class="header">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <div>
+                    <h1>📋 BOSS Observation Tool</h1>
+                    <p>Behavioral Observation of Students in Schools - Momentary Time Sampling</p>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn btn-secondary btn-small" onclick="toggleTheme()" id="themeToggle" title="Toggle Theme">🌙</button>
+                    <button class="btn btn-secondary btn-small" onclick="openHelp()" title="Help">?</button>
+                    <button class="btn btn-secondary btn-small" onclick="openSettings()" title="Settings">⚙️</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Setup Panel -->
+        <section class="setup-panel" role="form" aria-label="Observation Setup">
+            <div class="setup-grid">
+                <div class="form-group">
+                    <label for="studentName">Student Name</label>
+                    <input type="text" id="studentName" placeholder="Enter student name" aria-required="true">
+                </div>
+                <div class="form-group">
+                    <label for="observerName">Observer</label>
+                    <input type="text" id="observerName" placeholder="Enter your name">
+                </div>
+                <div class="form-group">
+                    <label for="observationDate">Date</label>
+                    <input type="date" id="observationDate" aria-label="Observation date">
+                </div>
+                <div class="form-group">
+                    <label for="duration">Duration (minutes)</label>
+                    <select id="duration" aria-label="Observation duration">
+                        <option value="5">5 minutes</option>
+                        <option value="10">10 minutes</option>
+                        <option value="15" selected>15 minutes</option>
+                        <option value="20">20 minutes</option>
+                        <option value="30">30 minutes</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- Timer Section -->
+        <section class="timer-section" id="timerSection" role="timer" aria-label="Observation Timer">
+            <div class="timer-display" id="timerDisplay" aria-live="polite" aria-atomic="true">00:00</div>
+            <div class="interval-indicator" aria-live="polite">
+                Interval: <span id="currentInterval">0</span> / <span id="totalIntervals">0</span>
+            </div>
+            <div class="observation-counts">
+                <div class="count-item">
+                    <span class="count-dot target"></span>
+                    <span>Target Student: <strong id="targetCount">n=0</strong></span>
+                </div>
+                <div class="count-item">
+                    <span class="count-dot peer"></span>
+                    <span>Comparison Peer: <strong id="peerCount">n=0</strong></span>
+                </div>
+            </div>
+            <div class="turn-pattern" id="turnPattern">
+                Pattern: T T T T P • T T T T P • T T T T P ...
+            </div>
+            <div class="current-turn target" id="currentTurn">Waiting to Start</div>
+            <div class="control-buttons">
+                <button class="btn btn-primary" id="startBtn" onclick="startObservation()">
+                    ▶ Start Observation
+                </button>
+                <button class="btn btn-pause" id="pauseBtn" onclick="pauseObservation()" disabled>
+                    ⏸ Pause
+                </button>
+                <button class="btn btn-danger" id="stopBtn" onclick="stopObservation()" disabled>
+                    ⏹ Stop
+                </button>
+                <button class="btn btn-secondary" onclick="resetObservation()">
+                    ↻ Reset
+                </button>
+                <button class="btn btn-secondary" onclick="openSessionManager()">
+                    💾 Sessions
+                </button>
+            </div>
+        </section>
+
+        <!-- Recording Section - Behaviors + Notes Side by Side -->
+        <section class="recording-section" id="recordingSection">
+            <div class="recording-grid">
+                <!-- Notes on the left -->
+                <div class="notes-panel">
+                    <h3 class="section-title">Observation Notes</h3>
+                    <textarea id="observationNotes" placeholder="Type observation notes here...&#10;&#10;• Classroom context&#10;• Activities occurring&#10;• Student behaviors&#10;• Interventions used&#10;&#10;(Notes auto-save as you type)"></textarea>
+                </div>
+
+                <!-- Behaviors on the right -->
+                <div class="behavior-panel">
+                    <div class="behavior-header">
+                        <h3 class="section-title">Record Behavior</h3>
+                        <div class="countdown-display" id="countdownDisplay">
+                            <span class="countdown-label">Next interval in</span>
+                            <span class="countdown-number" id="countdownNumber">15</span>
+                            <span class="countdown-label">sec</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Alert Banner -->
+                    <div class="record-alert" id="recordAlert">
+                        <div class="alert-content">
+                            <span class="alert-icon">●</span>
+                            <span class="alert-text">RECORD NOW!</span>
+                            <span class="alert-subject" id="alertSubject">Target Student</span>
+                        </div>
+                    </div>
+
+                    <div class="behavior-categories">
+                        <div class="category-group on-task">
+                            <h4>ON-TASK</h4>
+                            <div class="behavior-grid">
+                                <button class="behavior-btn btn-aet" id="btn-AET" onclick="recordBehavior('AET')" disabled aria-label="Record AET - Active Engaged Time" role="button">
+                                    <span class="code" aria-hidden="true">1 AET</span>
+                                    <span class="label">Active Engagement</span>
+                                </button>
+                                <button class="behavior-btn btn-pet" id="btn-PET" onclick="recordBehavior('PET')" disabled aria-label="Record PET - Passive Engaged Time" role="button">
+                                    <span class="code" aria-hidden="true">2 PET</span>
+                                    <span class="label">Passive Engagement</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="category-group off-task">
+                            <h4>OFF-TASK</h4>
+                            <div class="behavior-grid">
+                                <button class="behavior-btn btn-oft-m" id="btn-OFT-M" onclick="recordBehavior('OFT-M')" disabled aria-label="Record OFT-M - Off-Task Motor" role="button">
+                                    <span class="code" aria-hidden="true">3 OFT-M</span>
+                                    <span class="label">Motor</span>
+                                </button>
+                                <button class="behavior-btn btn-oft-v" id="btn-OFT-V" onclick="recordBehavior('OFT-V')" disabled aria-label="Record OFT-V - Off-Task Verbal" role="button">
+                                    <span class="code" aria-hidden="true">4 OFT-V</span>
+                                    <span class="label">Verbal</span>
+                                </button>
+                                <button class="behavior-btn btn-oft-p" id="btn-OFT-P" onclick="recordBehavior('OFT-P')" disabled aria-label="Record OFT-P - Off-Task Passive" role="button">
+                                    <span class="code" aria-hidden="true">5 OFT-P</span>
+                                    <span class="label">Passive</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="keyboard-hint">
+                        <span>Keyboard shortcuts: Press <kbd>Ctrl+1</kbd> through <kbd>Ctrl+5</kbd> to record behaviors (works even while typing notes)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Section -->
+        <section class="data-section">
+            <div class="data-header">
+                <h3 class="section-title">Observation Data</h3>
+                <div class="data-stats">
+                    <div class="stat-item">
+                        <div class="stat-value target" id="targetOnTask">0%</div>
+                        <div class="stat-label">Target On-Task</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value peer" id="peerOnTask">0%</div>
+                        <div class="stat-label">Peer On-Task</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalObservations">0</div>
+                        <div class="stat-label">Total Intervals</div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Interval</th>
+                            <th>Time</th>
+                            <th>Subject</th>
+                            <th>Behavior</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataTableBody">
+                        <tr>
+                            <td colspan="5" class="empty-state">
+                                <div class="empty-state-icon">📊</div>
+                                <div>No data yet. Start an observation to begin recording.</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Chart Section -->
+        <section class="chart-section">
+            <h3 class="section-title">Visual Summary</h3>
+            <div class="chart-wrapper">
+                <div class="chart-container">
+                    <canvas id="behaviorChart"></canvas>
+                </div>
+                <div class="chart-subtitle" id="chartSubtitle">
+                    Target Student n=0 • Comparison Peer n=0 • interval=15s
+                </div>
+            </div>
+            <div class="chart-actions">
+                <button class="btn btn-secondary" onclick="copyChartToClipboard()">
+                    📋 Copy Chart
+                </button>
+                <button class="btn btn-secondary" onclick="downloadChart()">
+                    ⬇ Download Chart
+                </button>
+                <button class="btn btn-secondary" onclick="exportData()">
+                    📄 Export CSV
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast toast-success" id="toast">
+        <span class="toast-icon">✓</span>
+        <span id="toastMessage">Action completed!</span>
+    </div>
+
+    <!-- Session Manager Modal -->
+    <div class="modal" id="sessionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Session Manager</h2>
+                <button class="modal-close" onclick="closeSessionManager()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <h3>Current Session</h3>
+                    <button class="btn btn-primary" onclick="saveCurrentSession()">Save Current Session</button>
+                </div>
+                <div class="modal-section">
+                    <h3>Saved Sessions</h3>
+                    <div id="sessionList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button class="modal-close" onclick="closeSettings()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-group">
+                    <label>Interval Length (seconds)</label>
+                    <select id="intervalLengthSetting" onchange="updateIntervalSetting()">
+                        <option value="10">10 seconds</option>
+                        <option value="15" selected>15 seconds</option>
+                        <option value="20">20 seconds</option>
+                        <option value="30">30 seconds</option>
+                    </select>
+                </div>
+                <div class="settings-group">
+                    <label>Alert Volume</label>
+                    <input type="range" id="volumeSetting" min="0" max="1" step="0.1" value="0.3" onchange="updateVolumeSetting()">
+                    <span id="volumeValue">30%</span>
+                </div>
+                <div class="settings-group">
+                    <label>Observation Pattern (Target : Peer)</label>
+                    <select id="patternSetting" onchange="updatePatternSetting()">
+                        <option value="3:1">3:1 (3 Target, 1 Peer)</option>
+                        <option value="4:1" selected>4:1 (4 Target, 1 Peer)</option>
+                        <option value="5:1">5:1 (5 Target, 1 Peer)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div class="modal" id="helpModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>BOSS Observation Tool - Help Guide</h2>
+                <button class="modal-close" onclick="closeHelp()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="help-section">
+                    <h3>What is BOSS?</h3>
+                    <p>BOSS (Behavioral Observation of Students in Schools) is a systematic direct observation tool used to measure student engagement in the classroom using momentary time sampling.</p>
+                </div>
+                <div class="help-section">
+                    <h3>Getting Started</h3>
+                    <ol>
+                        <li>Enter student name, observer name, and select observation duration</li>
+                        <li>Click "Start Observation" to begin the timer</li>
+                        <li>Every 15 seconds, you'll be prompted to record behavior</li>
+                        <li>Observe and record for Target Student (4x) then Comparison Peer (1x)</li>
+                        <li>Take notes throughout the observation</li>
+                    </ol>
+                </div>
+                <div class="help-section">
+                    <h3>Behavior Codes</h3>
+                    <div class="behavior-help">
+                        <h4>On-Task Behaviors:</h4>
+                        <ul>
+                            <li><strong>AET (Active Engaged Time):</strong> Actively participating in assigned activity</li>
+                            <li><strong>PET (Passive Engaged Time):</strong> Passively attending to assigned activity</li>
+                        </ul>
+                        <h4>Off-Task Behaviors:</h4>
+                        <ul>
+                            <li><strong>OFT-M (Off-Task Motor):</strong> Physical movement not related to task</li>
+                            <li><strong>OFT-V (Off-Task Verbal):</strong> Verbal behavior not related to task</li>
+                            <li><strong>OFT-P (Off-Task Passive):</strong> Not engaged, not disruptive</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="help-section">
+                    <h3>Keyboard Shortcuts</h3>
+                    <ul>
+                        <li><kbd>Ctrl+1</kbd> - Record AET</li>
+                        <li><kbd>Ctrl+2</kbd> - Record PET</li>
+                        <li><kbd>Ctrl+3</kbd> - Record OFT-M</li>
+                        <li><kbd>Ctrl+4</kbd> - Record OFT-V</li>
+                        <li><kbd>Ctrl+5</kbd> - Record OFT-P</li>
+                        <li><kbd>1-5</kbd> - Same behaviors when not typing</li>
+                    </ul>
+                </div>
+                <div class="help-section">
+                    <h3>Tips for Accurate Observations</h3>
+                    <ul>
+                        <li>Position yourself where you can see both students clearly</li>
+                        <li>Record the behavior at the exact moment the beep sounds</li>
+                        <li>Do not average behavior over the interval</li>
+                        <li>Maintain objectivity - record what you see, not interpretations</li>
+                        <li>Use notes to capture context and important details</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let isRunning = false;
+        let isPaused = false;
+        let timer = null;
+        let currentSeconds = 0;
+        let currentInterval = 0;
+        let totalIntervals = 0;
+        let cyclePosition = 0; // 0-4: positions in the 5-interval cycle (4 target, 1 peer)
+        let waitingForInput = false;
+        let observations = [];
+        let chart = null;
+        let secondsUntilNextInterval = 15;
+        let isNotesFieldFocused = false;
+        let settings = {
+            intervalLength: 15,
+            volume: 0.3,
+            theme: 'dark',
+            observationPattern: '4:1' // 4 target : 1 peer
+        };
+
+        // LocalStorage keys
+        const STORAGE_KEYS = {
+            CURRENT_SESSION: 'boss_current_session',
+            SAVED_SESSIONS: 'boss_saved_sessions',
+            SETTINGS: 'boss_settings'
+        };
+
+        // Load settings from localStorage
+        function loadSettings() {
+            const saved = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+            if (saved) {
+                settings = { ...settings, ...JSON.parse(saved) };
+            }
+            // Apply saved theme
+            if (settings.theme === 'light') {
+                document.body.classList.add('light-mode');
+                updateThemeToggleIcon();
+            }
+        }
+
+        // Save settings to localStorage
+        function saveSettings() {
+            localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
+        }
+
+        // Auto-save current session
+        function autoSaveSession() {
+            const sessionData = {
+                studentName: document.getElementById('studentName').value,
+                observerName: document.getElementById('observerName').value,
+                observationDate: document.getElementById('observationDate').value,
+                duration: document.getElementById('duration').value,
+                notes: document.getElementById('observationNotes').value,
+                observations: observations,
+                currentSeconds: currentSeconds,
+                currentInterval: currentInterval,
+                cyclePosition: cyclePosition,
+                isRunning: isRunning,
+                isPaused: isPaused,
+                timestamp: new Date().toISOString()
+            };
+            localStorage.setItem(STORAGE_KEYS.CURRENT_SESSION, JSON.stringify(sessionData));
+        }
+
+        // Load current session
+        function loadCurrentSession() {
+            const saved = localStorage.getItem(STORAGE_KEYS.CURRENT_SESSION);
+            if (saved) {
+                return JSON.parse(saved);
+            }
+            return null;
+        }
+
+        // Clear current session
+        function clearCurrentSession() {
+            localStorage.removeItem(STORAGE_KEYS.CURRENT_SESSION);
+        }
+
+        // Restore session
+        function restoreSession(sessionData) {
+            document.getElementById('studentName').value = sessionData.studentName || '';
+            document.getElementById('observerName').value = sessionData.observerName || '';
+            document.getElementById('observationDate').value = sessionData.observationDate || '';
+            document.getElementById('duration').value = sessionData.duration || '15';
+            document.getElementById('observationNotes').value = sessionData.notes || '';
+
+            observations = sessionData.observations || [];
+            currentSeconds = sessionData.currentSeconds || 0;
+            currentInterval = sessionData.currentInterval || 0;
+            cyclePosition = sessionData.cyclePosition || 0;
+
+            updateTotalIntervals();
+            updateDataTable();
+            updateStats();
+            updateChart();
+            updateObservationCounts();
+            updateTimerDisplay();
+
+            // Update interval displays
+            document.getElementById('currentInterval').textContent = currentInterval;
+            document.getElementById('stickyCurrentInterval').textContent = currentInterval;
+
+            // Update turn display
+            updateTurnDisplay();
+
+            if (sessionData.observations && sessionData.observations.length > 0) {
+                showToast(`Restored session with ${sessionData.observations.length} observations`);
+            }
+        }
+
+        // Save session to library
+        function saveSessionToLibrary(sessionName) {
+            const sessionData = {
+                name: sessionName || `${document.getElementById('studentName').value} - ${document.getElementById('observationDate').value}`,
+                studentName: document.getElementById('studentName').value,
+                observerName: document.getElementById('observerName').value,
+                observationDate: document.getElementById('observationDate').value,
+                duration: document.getElementById('duration').value,
+                notes: document.getElementById('observationNotes').value,
+                observations: observations,
+                currentSeconds: currentSeconds,
+                currentInterval: currentInterval,
+                cyclePosition: cyclePosition,
+                timestamp: new Date().toISOString()
+            };
+
+            const saved = localStorage.getItem(STORAGE_KEYS.SAVED_SESSIONS);
+            const sessions = saved ? JSON.parse(saved) : [];
+            sessions.push(sessionData);
+            localStorage.setItem(STORAGE_KEYS.SAVED_SESSIONS, JSON.stringify(sessions));
+
+            showToast('Session saved to library!');
+            return sessionData;
+        }
+
+        // Get all saved sessions
+        function getSavedSessions() {
+            const saved = localStorage.getItem(STORAGE_KEYS.SAVED_SESSIONS);
+            return saved ? JSON.parse(saved) : [];
+        }
+
+        // Delete session from library
+        function deleteSession(index) {
+            const sessions = getSavedSessions();
+            sessions.splice(index, 1);
+            localStorage.setItem(STORAGE_KEYS.SAVED_SESSIONS, JSON.stringify(sessions));
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('observationDate').valueAsDate = new Date();
+            loadSettings();
+            updateTotalIntervals();
+            initChart();
+
+            // Check for saved session and prompt to restore
+            const savedSession = loadCurrentSession();
+            if (savedSession && savedSession.observations && savedSession.observations.length > 0) {
+                if (confirm(`Found a previous session with ${savedSession.observations.length} observations from ${new Date(savedSession.timestamp).toLocaleString()}. Would you like to restore it?`)) {
+                    restoreSession(savedSession);
+                } else {
+                    clearCurrentSession();
+                }
+            }
+
+            document.getElementById('duration').addEventListener('change', () => {
+                updateTotalIntervals();
+                autoSaveSession();
+            });
+
+            // Auto-save notes as user types
+            const notesField = document.getElementById('observationNotes');
+            notesField.addEventListener('input', () => {
+                autoSaveSession();
+            });
+
+            // Auto-save form fields
+            document.getElementById('studentName').addEventListener('input', autoSaveSession);
+            document.getElementById('observerName').addEventListener('input', autoSaveSession);
+            document.getElementById('observationDate').addEventListener('change', autoSaveSession);
+
+            // Handle sticky info bar on scroll
+            let timerSection = document.getElementById('timerSection');
+            let stickyBar = document.getElementById('stickyInfoBar');
+
+            window.addEventListener('scroll', () => {
+                let timerRect = timerSection.getBoundingClientRect();
+                // Show sticky bar when timer section is above viewport
+                if (timerRect.bottom < 0 && isRunning) {
+                    stickyBar.classList.add('show');
+                } else {
+                    stickyBar.classList.remove('show');
+                }
+            });
+
+            // Track if notes field is focused
+            notesField.addEventListener('focus', () => {
+                isNotesFieldFocused = true;
+            });
+            notesField.addEventListener('blur', () => {
+                isNotesFieldFocused = false;
+            });
+
+            // Keyboard shortcuts (Ctrl+1-5 for behaviors, works even while typing in notes)
+            document.addEventListener('keydown', (e) => {
+                // Only work when waiting for input
+                if (!waitingForInput) return;
+
+                // Check for Ctrl+1 through Ctrl+5 (works while typing in notes)
+                if (e.ctrlKey && e.key >= '1' && e.key <= '5') {
+                    e.preventDefault(); // Prevent any default browser behavior
+
+                    const keyMap = {
+                        '1': 'AET',
+                        '2': 'PET',
+                        '3': 'OFT-M',
+                        '4': 'OFT-V',
+                        '5': 'OFT-P'
+                    };
+
+                    recordBehavior(keyMap[e.key]);
+                }
+                // Also support plain 1-5 when NOT typing in an input field (for convenience)
+                else if (!isNotesFieldFocused && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                    const keyMap = {
+                        '1': 'AET',
+                        '2': 'PET',
+                        '3': 'OFT-M',
+                        '4': 'OFT-V',
+                        '5': 'OFT-P'
+                    };
+
+                    if (keyMap[e.key]) {
+                        e.preventDefault();
+                        recordBehavior(keyMap[e.key]);
+                    }
+                }
+            });
+        });
+
+        function updateTotalIntervals() {
+            const duration = parseInt(document.getElementById('duration').value);
+            // Calculate intervals based on interval length setting
+            const intervalsPerMinute = 60 / settings.intervalLength;
+            totalIntervals = Math.floor(duration * intervalsPerMinute);
+            document.getElementById('totalIntervals').textContent = totalIntervals;
+            document.getElementById('stickyTotalIntervals').textContent = totalIntervals;
+        }
+
+        function isTargetTurn() {
+            // Cycle: T T T T P (positions 0-3 are target, position 4 is peer)
+            return cyclePosition < 4;
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('behaviorChart').getContext('2d');
+            
+            Chart.register(ChartDataLabels);
+            
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['% AET', '% PET', '% TOTAL', '% OFT-M', '% OFT-V', '% OFT-P', '% TOTAL'],
+                    datasets: [
+                        {
+                            label: 'Target Student',
+                            data: [0, 0, 0, 0, 0, 0, 0],
+                            backgroundColor: '#4a90d9',
+                            borderColor: '#4a90d9',
+                            borderWidth: 0,
+                            borderRadius: 4,
+                            barPercentage: 0.7,
+                            categoryPercentage: 0.8
+                        },
+                        {
+                            label: 'Comparison Peer',
+                            data: [0, 0, 0, 0, 0, 0, 0],
+                            backgroundColor: '#5cb85c',
+                            borderColor: '#5cb85c',
+                            borderWidth: 0,
+                            borderRadius: 4,
+                            barPercentage: 0.7,
+                            categoryPercentage: 0.8
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Behavioral Observation of Students in Schools',
+                            color: '#333',
+                            font: {
+                                family: 'DM Sans',
+                                size: 22,
+                                weight: '600'
+                            },
+                            padding: { bottom: 25 }
+                        },
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#333',
+                                font: { family: 'DM Sans', size: 14 },
+                                padding: 20,
+                                usePointStyle: true,
+                                pointStyle: 'rect'
+                            }
+                        },
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'top',
+                            color: '#333',
+                            font: {
+                                family: 'DM Sans',
+                                size: 13,
+                                weight: '600'
+                            },
+                            formatter: (value) => value > 0 ? value : ''
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                color: '#333',
+                                font: { family: 'DM Sans', size: 13, weight: '500' }
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: '% of Intervals Observed',
+                                color: '#666',
+                                font: { family: 'DM Sans', size: 14, weight: '500' }
+                            },
+                            grid: { color: 'rgba(0, 0, 0, 0.1)' },
+                            ticks: {
+                                color: '#666',
+                                font: { family: 'DM Sans', size: 12 },
+                                stepSize: 10
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function startObservation() {
+            if (!document.getElementById('studentName').value) {
+                showToast('Please enter a student name');
+                return;
+            }
+
+            // If resuming from pause, don't reset values
+            if (!isPaused) {
+                currentSeconds = 0;
+                currentInterval = 0;
+                cyclePosition = 0;
+            }
+
+            isRunning = true;
+            isPaused = false;
+
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('pauseBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = false;
+            document.getElementById('timerDisplay').classList.add('recording');
+            document.getElementById('pauseBtn').innerHTML = '⏸ Pause';
+
+            updateTurnDisplay();
+            enableBehaviorButtons(true);
+
+            // Start the timer
+            timer = setInterval(() => {
+                if (!waitingForInput) {
+                    currentSeconds++;
+                    updateTimerDisplay();
+                    updateCountdown();
+
+                    // Every interval, prompt for observation
+                    if (currentSeconds % settings.intervalLength === 0 && currentSeconds > 0) {
+                        promptForObservation();
+                    }
+                }
+            }, 1000);
+        }
+
+        function updateCountdown() {
+            const intervalLength = settings.intervalLength;
+            secondsUntilNextInterval = intervalLength - (currentSeconds % intervalLength);
+            if (secondsUntilNextInterval === intervalLength && currentSeconds > 0) {
+                secondsUntilNextInterval = 0;
+            }
+
+            const countdownEl = document.getElementById('countdownNumber');
+            const countdownContainer = document.getElementById('countdownDisplay');
+            
+            countdownEl.textContent = secondsUntilNextInterval;
+
+            // Update countdown styling based on time remaining
+            countdownContainer.classList.remove('warning', 'urgent');
+            if (secondsUntilNextInterval <= 3 && secondsUntilNextInterval > 0) {
+                countdownContainer.classList.add('urgent');
+            } else if (secondsUntilNextInterval <= 5) {
+                countdownContainer.classList.add('warning');
+            }
+        }
+
+        function promptForObservation() {
+            currentInterval++;
+            document.getElementById('currentInterval').textContent = currentInterval;
+            document.getElementById('stickyCurrentInterval').textContent = currentInterval;
+
+            // Play sound
+            playIntervalSound();
+
+            // Flash the section
+            document.getElementById('timerSection').classList.add('interval-flash');
+            setTimeout(() => {
+                document.getElementById('timerSection').classList.remove('interval-flash');
+            }, 500);
+
+            // Show the alert banner
+            const alertEl = document.getElementById('recordAlert');
+            const alertSubject = document.getElementById('alertSubject');
+            const recordingSection = document.getElementById('recordingSection');
+            
+            alertEl.classList.add('show');
+            recordingSection.classList.add('alert-active');
+            
+            // Style based on target vs peer
+            if (isTargetTurn()) {
+                alertEl.classList.remove('peer-turn');
+                recordingSection.classList.remove('peer-alert');
+                alertSubject.textContent = 'TARGET STUDENT';
+            } else {
+                alertEl.classList.add('peer-turn');
+                recordingSection.classList.add('peer-alert');
+                alertSubject.textContent = 'COMPARISON PEER';
+            }
+
+            waitingForInput = true;
+            highlightBehaviorButtons(true);
+        }
+
+        function playIntervalSound() {
+            if (settings.volume === 0) return; // Muted
+
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            // Different frequencies for target vs peer
+            oscillator.frequency.value = isTargetTurn() ? 800 : 600;
+            oscillator.type = 'sine';
+
+            gainNode.gain.setValueAtTime(settings.volume, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
+        }
+
+        function recordBehavior(behavior) {
+            if (!waitingForInput) return;
+
+            const observation = {
+                interval: currentInterval,
+                time: formatTime(currentSeconds),
+                subject: isTargetTurn() ? 'Target' : 'Peer',
+                behavior: behavior,
+                isOnTask: behavior === 'AET' || behavior === 'PET'
+            };
+
+            observations.push(observation);
+            updateDataTable();
+            updateStats();
+            updateChart();
+            updateObservationCounts();
+            autoSaveSession();
+
+            // Hide the alert banner
+            document.getElementById('recordAlert').classList.remove('show', 'peer-turn');
+            document.getElementById('recordingSection').classList.remove('alert-active', 'peer-alert');
+
+            // Remove highlight from buttons
+            highlightBehaviorButtons(false);
+            clearButtonSelections();
+
+            // Highlight selected button briefly
+            const btn = document.getElementById(`btn-${behavior}`);
+            btn.classList.add('selected');
+            setTimeout(() => btn.classList.remove('selected'), 300);
+
+            // Move to next position in cycle
+            cyclePosition = (cyclePosition + 1) % 5;
+            updateTurnDisplay();
+
+            // Reset countdown display
+            document.getElementById('countdownNumber').textContent = settings.intervalLength.toString();
+            document.getElementById('countdownDisplay').classList.remove('warning', 'urgent');
+
+            waitingForInput = false;
+
+            // Check if observation complete AFTER recording
+            if (currentInterval >= totalIntervals) {
+                setTimeout(() => {
+                    stopObservation();
+                    showToast('Observation complete!');
+                }, 100);
+            }
+        }
+
+        function updateObservationCounts() {
+            const targetObs = observations.filter(o => o.subject === 'Target').length;
+            const peerObs = observations.filter(o => o.subject === 'Peer').length;
+
+            document.getElementById('targetCount').textContent = `n=${targetObs}`;
+            document.getElementById('peerCount').textContent = `n=${peerObs}`;
+            document.getElementById('stickyTargetCount').textContent = `n=${targetObs}`;
+            document.getElementById('stickyPeerCount').textContent = `n=${peerObs}`;
+            document.getElementById('chartSubtitle').textContent =
+                `Target Student n=${targetObs} • Comparison Peer n=${peerObs} • interval=15s`;
+        }
+
+        function pauseObservation() {
+            if (isPaused) {
+                // Resume
+                startObservation();
+            } else {
+                // Pause
+                isPaused = true;
+                isRunning = false;
+                clearInterval(timer);
+                
+                document.getElementById('startBtn').disabled = false;
+                document.getElementById('pauseBtn').innerHTML = '▶ Resume';
+                document.getElementById('timerDisplay').classList.remove('recording');
+                
+                enableBehaviorButtons(false);
+                highlightBehaviorButtons(false);
+                
+                showToast('Observation paused');
+            }
+        }
+
+        function stopObservation() {
+            isRunning = false;
+            isPaused = false;
+            clearInterval(timer);
+
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('pauseBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('timerDisplay').classList.remove('recording');
+            document.getElementById('pauseBtn').innerHTML = '⏸ Pause';
+            document.getElementById('recordAlert').classList.remove('show', 'peer-turn');
+            document.getElementById('recordingSection').classList.remove('alert-active', 'peer-alert');
+            document.getElementById('stickyInfoBar').classList.remove('show');
+
+            enableBehaviorButtons(false);
+            highlightBehaviorButtons(false);
+        }
+
+        function resetObservation() {
+            stopObservation();
+            currentSeconds = 0;
+            currentInterval = 0;
+            cyclePosition = 0;
+            observations = [];
+            waitingForInput = false;
+            isPaused = false;
+            secondsUntilNextInterval = 15;
+
+            document.getElementById('timerDisplay').textContent = '00:00';
+            document.getElementById('stickyTimer').textContent = '00:00';
+            document.getElementById('currentInterval').textContent = '0';
+            document.getElementById('stickyCurrentInterval').textContent = '0';
+            document.getElementById('currentTurn').textContent = 'Waiting to Start';
+            document.getElementById('currentTurn').className = 'current-turn target';
+            document.getElementById('targetCount').textContent = 'n=0';
+            document.getElementById('peerCount').textContent = 'n=0';
+            document.getElementById('stickyTargetCount').textContent = 'n=0';
+            document.getElementById('stickyPeerCount').textContent = 'n=0';
+            document.getElementById('chartSubtitle').textContent =
+                'Target Student n=0 • Comparison Peer n=0 • interval=15s';
+            document.getElementById('pauseBtn').innerHTML = '⏸ Pause';
+            document.getElementById('countdownNumber').textContent = settings.intervalLength.toString();
+            document.getElementById('countdownDisplay').classList.remove('warning', 'urgent');
+            document.getElementById('recordAlert').classList.remove('show', 'peer-turn');
+            document.getElementById('recordingSection').classList.remove('alert-active', 'peer-alert');
+
+            updateDataTable();
+            updateStats();
+            resetChart();
+            clearCurrentSession();
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(currentSeconds / 60);
+            const seconds = currentSeconds % 60;
+            const timeStr = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('timerDisplay').textContent = timeStr;
+            document.getElementById('stickyTimer').textContent = timeStr;
+        }
+
+        function formatTime(totalSeconds) {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function updateTurnDisplay() {
+            const turnEl = document.getElementById('currentTurn');
+            const patternEl = document.getElementById('turnPattern');
+
+            if (isTargetTurn()) {
+                turnEl.textContent = 'RECORDING: Target Student';
+                turnEl.className = 'current-turn target';
+            } else {
+                turnEl.textContent = 'RECORDING: Comparison Peer';
+                turnEl.className = 'current-turn peer';
+            }
+
+            // Update pattern display
+            const positions = ['T', 'T', 'T', 'T', 'P'];
+            const patternHTML = positions.map((p, i) => {
+                const isActive = i === cyclePosition;
+                const isPeer = p === 'P';
+                if (isActive) {
+                    return `<span class="active ${isPeer ? 'peer' : ''}">${p}</span>`;
+                }
+                return p;
+            }).join(' ');
+            
+            patternEl.innerHTML = `Pattern: ${patternHTML} • ${patternHTML} • ${patternHTML} ...`;
+        }
+
+        function enableBehaviorButtons(enabled) {
+            document.querySelectorAll('.behavior-btn').forEach(btn => {
+                btn.disabled = !enabled;
+            });
+        }
+
+        function highlightBehaviorButtons(highlight) {
+            // Behavior buttons no longer pulse - only the alert banner pulses
+        }
+
+        function clearButtonSelections() {
+            document.querySelectorAll('.behavior-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+        }
+
+        function updateDataTable() {
+            const tbody = document.getElementById('dataTableBody');
+            
+            if (observations.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="empty-state">
+                            <div class="empty-state-icon">📊</div>
+                            <div>No data yet. Start an observation to begin recording.</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = observations.map(obs => `
+                <tr>
+                    <td>${obs.interval}</td>
+                    <td>${obs.time}</td>
+                    <td><span class="badge badge-${obs.subject.toLowerCase()}">${obs.subject}</span></td>
+                    <td><strong>${obs.behavior}</strong></td>
+                    <td><span class="badge badge-${obs.isOnTask ? 'on-task' : 'off-task'}">${obs.isOnTask ? 'On-Task' : 'Off-Task'}</span></td>
+                </tr>
+            `).reverse().join('');
+        }
+
+        function updateStats() {
+            const targetObs = observations.filter(o => o.subject === 'Target');
+            const peerObs = observations.filter(o => o.subject === 'Peer');
+
+            const targetOnTaskCount = targetObs.filter(o => o.isOnTask).length;
+            const peerOnTaskCount = peerObs.filter(o => o.isOnTask).length;
+
+            const targetPercent = targetObs.length > 0 
+                ? Math.round((targetOnTaskCount / targetObs.length) * 100) 
+                : 0;
+            const peerPercent = peerObs.length > 0 
+                ? Math.round((peerOnTaskCount / peerObs.length) * 100) 
+                : 0;
+
+            document.getElementById('targetOnTask').textContent = `${targetPercent}%`;
+            document.getElementById('peerOnTask').textContent = `${peerPercent}%`;
+            document.getElementById('totalObservations').textContent = observations.length;
+        }
+
+        function updateChart() {
+            const targetObs = observations.filter(o => o.subject === 'Target');
+            const peerObs = observations.filter(o => o.subject === 'Peer');
+
+            // Calculate percentages for each behavior
+            const calcPercent = (obs, behaviors) => {
+                if (obs.length === 0) return 0;
+                const count = obs.filter(o => behaviors.includes(o.behavior)).length;
+                return Math.round((count / obs.length) * 100);
+            };
+
+            const targetData = [
+                calcPercent(targetObs, ['AET']),           // % AET
+                calcPercent(targetObs, ['PET']),           // % PET
+                calcPercent(targetObs, ['AET', 'PET']),    // % TOTAL On-Task
+                calcPercent(targetObs, ['OFT-M']),         // % OFT-M
+                calcPercent(targetObs, ['OFT-V']),         // % OFT-V
+                calcPercent(targetObs, ['OFT-P']),         // % OFT-P
+                calcPercent(targetObs, ['OFT-M', 'OFT-V', 'OFT-P'])  // % TOTAL Off-Task
+            ];
+
+            const peerData = [
+                calcPercent(peerObs, ['AET']),
+                calcPercent(peerObs, ['PET']),
+                calcPercent(peerObs, ['AET', 'PET']),
+                calcPercent(peerObs, ['OFT-M']),
+                calcPercent(peerObs, ['OFT-V']),
+                calcPercent(peerObs, ['OFT-P']),
+                calcPercent(peerObs, ['OFT-M', 'OFT-V', 'OFT-P'])
+            ];
+
+            chart.data.datasets[0].data = targetData;
+            chart.data.datasets[1].data = peerData;
+            chart.update();
+        }
+
+        function resetChart() {
+            chart.data.datasets[0].data = [0, 0, 0, 0, 0, 0, 0];
+            chart.data.datasets[1].data = [0, 0, 0, 0, 0, 0, 0];
+            chart.update();
+        }
+
+        function copyChartToClipboard() {
+            const canvas = document.getElementById('behaviorChart');
+            canvas.toBlob(blob => {
+                const item = new ClipboardItem({ 'image/png': blob });
+                navigator.clipboard.write([item]).then(() => {
+                    showToast('Chart copied to clipboard! Ready to paste into Word.');
+                }).catch(err => {
+                    showToast('Failed to copy chart');
+                    console.error(err);
+                });
+            }, 'image/png', 1.0);
+        }
+
+        function downloadChart() {
+            const canvas = document.getElementById('behaviorChart');
+            const link = document.createElement('a');
+            const studentName = document.getElementById('studentName').value || 'observation';
+            const date = document.getElementById('observationDate').value;
+            link.download = `BOSS_${studentName}_${date}.png`;
+            // Export at higher quality for better Word document compatibility
+            link.href = canvas.toDataURL('image/png', 1.0);
+            link.click();
+            showToast('Chart downloaded!');
+        }
+
+        function exportData() {
+            if (observations.length === 0) {
+                showToast('No data to export');
+                return;
+            }
+
+            const studentName = document.getElementById('studentName').value;
+            const observerName = document.getElementById('observerName').value;
+            const date = document.getElementById('observationDate').value;
+            const notes = document.getElementById('observationNotes').value;
+
+            const targetObs = observations.filter(o => o.subject === 'Target');
+            const peerObs = observations.filter(o => o.subject === 'Peer');
+
+            const calcPercent = (obs, behaviors) => {
+                if (obs.length === 0) return 0;
+                const count = obs.filter(o => behaviors.includes(o.behavior)).length;
+                return Math.round((count / obs.length) * 100);
+            };
+
+            let csv = 'BOSS Observation Data\n';
+            csv += `Student,${studentName}\n`;
+            csv += `Observer,${observerName}\n`;
+            csv += `Date,${date}\n`;
+            csv += `Target Observations,${targetObs.length}\n`;
+            csv += `Peer Observations,${peerObs.length}\n\n`;
+            
+            csv += 'Raw Data\n';
+            csv += 'Interval,Time,Subject,Behavior,On-Task\n';
+            
+            observations.forEach(obs => {
+                csv += `${obs.interval},${obs.time},${obs.subject},${obs.behavior},${obs.isOnTask ? 'Yes' : 'No'}\n`;
+            });
+
+            // Add summary percentages
+            csv += `\nSummary Percentages\n`;
+            csv += `Behavior,Target %,Peer %\n`;
+            csv += `AET,${calcPercent(targetObs, ['AET'])},${calcPercent(peerObs, ['AET'])}\n`;
+            csv += `PET,${calcPercent(targetObs, ['PET'])},${calcPercent(peerObs, ['PET'])}\n`;
+            csv += `Total On-Task,${calcPercent(targetObs, ['AET', 'PET'])},${calcPercent(peerObs, ['AET', 'PET'])}\n`;
+            csv += `OFT-M,${calcPercent(targetObs, ['OFT-M'])},${calcPercent(peerObs, ['OFT-M'])}\n`;
+            csv += `OFT-V,${calcPercent(targetObs, ['OFT-V'])},${calcPercent(peerObs, ['OFT-V'])}\n`;
+            csv += `OFT-P,${calcPercent(targetObs, ['OFT-P'])},${calcPercent(peerObs, ['OFT-P'])}\n`;
+            csv += `Total Off-Task,${calcPercent(targetObs, ['OFT-M', 'OFT-V', 'OFT-P'])},${calcPercent(peerObs, ['OFT-M', 'OFT-V', 'OFT-P'])}\n`;
+
+            // Add notes
+            if (notes) {
+                csv += `\nObservation Notes\n`;
+                csv += `"${notes.replace(/"/g, '""')}"\n`;
+            }
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const link = document.createElement('a');
+            link.download = `BOSS_${studentName}_${date}.csv`;
+            link.href = URL.createObjectURL(blob);
+            link.click();
+            showToast('Data exported to CSV!');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Session Manager Functions
+        function openSessionManager() {
+            document.getElementById('sessionModal').classList.add('show');
+            refreshSessionList();
+        }
+
+        function closeSessionManager() {
+            document.getElementById('sessionModal').classList.remove('show');
+        }
+
+        function saveCurrentSession() {
+            const studentName = document.getElementById('studentName').value;
+            if (!studentName) {
+                showToast('Please enter a student name first');
+                return;
+            }
+
+            const sessionName = prompt('Enter a name for this session:', `${studentName} - ${document.getElementById('observationDate').value}`);
+            if (sessionName) {
+                saveSessionToLibrary(sessionName);
+                refreshSessionList();
+            }
+        }
+
+        function refreshSessionList() {
+            const sessions = getSavedSessions();
+            const listEl = document.getElementById('sessionList');
+
+            if (sessions.length === 0) {
+                listEl.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 20px;">No saved sessions yet</p>';
+                return;
+            }
+
+            listEl.innerHTML = sessions.map((session, index) => {
+                const elapsed = session.currentSeconds ? formatTime(session.currentSeconds) : '0:00';
+                const intervalInfo = session.currentInterval ? `${session.currentInterval} intervals` : `${session.observations.length} observations`;
+                return `
+                <div class="session-item">
+                    <div class="session-info">
+                        <div class="session-name">${session.name}</div>
+                        <div class="session-meta">
+                            ${intervalInfo} • ${elapsed} elapsed • ${new Date(session.timestamp).toLocaleDateString()}
+                        </div>
+                    </div>
+                    <div class="session-actions">
+                        <button class="btn btn-primary btn-small" onclick="loadSession(${index})">Load</button>
+                        <button class="btn btn-danger btn-small" onclick="confirmDeleteSession(${index})">Delete</button>
+                    </div>
+                </div>
+            `}).reverse().join('');
+        }
+
+        function loadSession(index) {
+            const sessions = getSavedSessions();
+            const session = sessions[index];
+            if (session) {
+                restoreSession(session);
+                closeSessionManager();
+            }
+        }
+
+        function confirmDeleteSession(index) {
+            if (confirm('Are you sure you want to delete this session?')) {
+                deleteSession(index);
+                refreshSessionList();
+                showToast('Session deleted');
+            }
+        }
+
+        // Settings Functions
+        function openSettings() {
+            document.getElementById('settingsModal').classList.add('show');
+            document.getElementById('intervalLengthSetting').value = settings.intervalLength;
+            document.getElementById('volumeSetting').value = settings.volume;
+            document.getElementById('volumeValue').textContent = Math.round(settings.volume * 100) + '%';
+            document.getElementById('patternSetting').value = settings.observationPattern;
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.remove('show');
+        }
+
+        function updateIntervalSetting() {
+            settings.intervalLength = parseInt(document.getElementById('intervalLengthSetting').value);
+            saveSettings();
+            showToast('Interval length updated. Will apply to next observation.');
+        }
+
+        function updateVolumeSetting() {
+            settings.volume = parseFloat(document.getElementById('volumeSetting').value);
+            document.getElementById('volumeValue').textContent = Math.round(settings.volume * 100) + '%';
+            saveSettings();
+        }
+
+        function updatePatternSetting() {
+            settings.observationPattern = document.getElementById('patternSetting').value;
+            saveSettings();
+            showToast('Observation pattern updated. Will apply to next observation.');
+        }
+
+        // Help Functions
+        function openHelp() {
+            document.getElementById('helpModal').classList.add('show');
+        }
+
+        function closeHelp() {
+            document.getElementById('helpModal').classList.remove('show');
+        }
+
+        // Theme Functions
+        function toggleTheme() {
+            const isLightMode = document.body.classList.toggle('light-mode');
+            settings.theme = isLightMode ? 'light' : 'dark';
+            saveSettings();
+            updateThemeToggleIcon();
+        }
+
+        function updateThemeToggleIcon() {
+            const toggleBtn = document.getElementById('themeToggle');
+            const isLightMode = document.body.classList.contains('light-mode');
+            toggleBtn.textContent = isLightMode ? '☀️' : '🌙';
+            toggleBtn.title = isLightMode ? 'Switch to Dark Mode' : 'Switch to Light Mode';
+        }
+
+        // Close modals on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeSessionManager();
+                closeSettings();
+                closeHelp();
+            }
+        });
+    </script>
+</body>
+</html>

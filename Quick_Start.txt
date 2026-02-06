@@ -1,0 +1,110 @@
+═══════════════════════════════════════════════════════════════════════
+    BOSS OBSERVATION TOOL - QUICK START GUIDE
+═══════════════════════════════════════════════════════════════════════
+
+INSTALLATION
+1. Extract ZIP file to your computer
+2. Double-click "BOSS_Observation_Tool.html"
+3. Bookmark the page in your browser
+
+═══════════════════════════════════════════════════════════════════════
+
+5-STEP OBSERVATION PROCESS
+
+[1] SETUP (30 seconds)
+    • Enter student name, observer name, date
+    • Select duration (5, 10, 15, 20, or 30 minutes)
+
+[2] START
+    • Click "▶ Start Observation"
+    • Timer starts, audio alert every 15 seconds
+
+[3] OBSERVE & RECORD
+    • When beep sounds, look at student
+    • Click behavior button or press keyboard shortcut:
+
+      ON-TASK:
+      1 or Ctrl+1 → AET (Active Engaged Time)
+      2 or Ctrl+2 → PET (Passive Engaged Time)
+
+      OFF-TASK:
+      3 or Ctrl+3 → OFT-M (Motor)
+      4 or Ctrl+4 → OFT-V (Verbal)
+      5 or Ctrl+5 → OFT-P (Passive)
+
+    • Pattern: Target (4x) → Peer (1x) → Repeat
+
+[4] TAKE NOTES
+    • Type observations in notes field
+    • Auto-saves as you type
+    • Keep typing while recording behaviors
+
+[5] EXPORT DATA
+    • 📄 Export CSV → Spreadsheet analysis
+    • 📋 Copy Chart → Paste into Word
+    • 💾 Sessions → Save for later
+
+═══════════════════════════════════════════════════════════════════════
+
+BEHAVIOR DEFINITIONS
+
+AET (Active Engaged Time)
+• Actively participating in assigned academic activity
+• Writing, reading aloud, raising hand, discussing
+
+PET (Passive Engaged Time)
+• Passively attending to assigned activity
+• Listening, looking at materials, watching teacher
+
+OFT-M (Off-Task Motor)
+• Physical movement not related to task
+• Out of seat, fidgeting, playing with objects
+
+OFT-V (Off-Task Verbal)
+• Verbal behavior not related to task
+• Talking to peers, calling out, making sounds
+
+OFT-P (Off-Task Passive)
+• Not engaged, not disruptive
+• Staring into space, head down, looking around
+
+═══════════════════════════════════════════════════════════════════════
+
+TIPS FOR ACCURATE OBSERVATIONS
+
+✓ Record what you see at the EXACT moment of the beep
+✓ Don't average behavior over the interval
+✓ Position yourself to see both students clearly
+✓ Record objectively - what you see, not interpretations
+✓ Use notes to capture context and patterns
+
+═══════════════════════════════════════════════════════════════════════
+
+IMPORTANT REMINDERS
+
+• Works 100% offline - no internet needed
+• All data stays on your computer (FERPA compliant)
+• Auto-saves as you work
+• Export data regularly as backup
+• Light/Dark mode: Click 🌙/☀️ button
+• Settings: Click ⚙️ to adjust volume, intervals, pattern
+• Help: Click ? button for full guide
+
+═══════════════════════════════════════════════════════════════════════
+
+TROUBLESHOOTING
+
+File won't open?
+→ Right-click → Open With → Chrome/Firefox/Safari
+
+No sound?
+→ Check volume, adjust in ⚙️ Settings
+
+Data disappeared?
+→ Don't clear browser cache. Export to CSV for backup.
+
+═══════════════════════════════════════════════════════════════════════
+
+Need more help? See README.txt or User Guide (PDF)
+
+═══════════════════════════════════════════════════════════════════════

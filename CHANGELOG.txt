@@ -1,0 +1,133 @@
+═══════════════════════════════════════════════════════════════════════
+    BOSS OBSERVATION TOOL - VERSION HISTORY
+═══════════════════════════════════════════════════════════════════════
+
+VERSION 1.0 - February 2026 (Initial Release)
+
+CORE FEATURES
+• Automated 15-second interval timer with audio alerts
+• All 5 BOSS behavior codes (AET, PET, OFT-M, OFT-V, OFT-P)
+• 4:1 observation pattern (4 target, 1 peer)
+• Real-time data visualization with professional charts
+• Export to CSV for data analysis
+• Copy charts directly to Word documents
+• Download charts as PNG images
+
+DATA MANAGEMENT
+• Auto-save functionality (prevents data loss)
+• Session manager (save/load multiple observations)
+• Session library with metadata
+• Restore previous sessions on page load
+• Browser localStorage integration
+
+USER INTERFACE
+• Clean, modern design
+• Dark mode (default) and Light mode themes
+• Responsive layout (desktop, tablet, mobile)
+• Sticky timer bar (visible when scrolling)
+• Side-by-side notes and behavior recording
+• Visual countdown to next interval
+• "RECORD NOW" alert banner
+• Clear target vs peer indicators
+
+CUSTOMIZATION
+• Interval length: 10s, 15s, 20s, 30s
+• Alert volume control with mute option
+• Observation pattern: 3:1, 4:1, 5:1
+• Duration options: 5, 10, 15, 20, 30 minutes
+• Theme toggle (dark/light)
+
+KEYBOARD SHORTCUTS
+• Ctrl+1 through Ctrl+5 (works while typing notes)
+• Plain 1-5 when not in text fields
+• ESC to close modals
+
+ACCESSIBILITY
+• ARIA labels for screen readers
+• Semantic HTML structure
+• Keyboard navigation support
+• High contrast modes
+• Touch-optimized for tablets
+
+HELP & DOCUMENTATION
+• Built-in help modal with methodology guide
+• Behavior code definitions
+• Keyboard shortcut reference
+• Tips for accurate observations
+• Getting started instructions
+
+NOTES SYSTEM
+• Auto-saving notes field
+• Side-by-side with behavior recording
+• Large text area for detailed observations
+• Preserves formatting
+
+DATA EXPORT
+• CSV export with summary statistics
+• High-quality chart export (1000x600px)
+• Copy to clipboard functionality
+• Timestamped filenames
+
+OFFLINE CAPABILITY
+• Works 100% offline
+• No internet connection required
+• No installation needed
+• FERPA compliant (local storage only)
+
+BROWSER COMPATIBILITY
+• Chrome 76+
+• Firefox 67+
+• Safari 13+
+• Edge 79+
+• Chromebooks supported
+
+MOBILE OPTIMIZATION
+• Touch-friendly buttons (min 44px targets)
+• Responsive grid layouts
+• Larger fonts on mobile
+• Optimized for tablets
+
+═══════════════════════════════════════════════════════════════════════
+
+PLANNED FEATURES (Future Versions)
+
+Version 1.1 (Planned)
+• PDF report generation
+• Multiple observation sessions per day
+• Data comparison across sessions
+• Trend graphs over time
+
+Version 1.2 (Planned)
+• Print-friendly report layouts
+• Additional observation patterns
+• Custom behavior codes
+• Multi-language support
+
+Version 2.0 (Planned)
+• Optional cloud sync
+• Team collaboration features
+• Advanced analytics
+• Mobile app version
+
+═══════════════════════════════════════════════════════════════════════
+
+KNOWN ISSUES
+
+• Safari on iOS may require manual audio permission
+• Very old browsers (pre-2019) not supported
+• Clearing browser cache will delete saved sessions
+  (Solution: Export to CSV regularly)
+
+═══════════════════════════════════════════════════════════════════════
+
+CREDITS
+
+BOSS Methodology: Shapiro, E. S. (2004)
+Design: Modern educational tool interface
+Technology: HTML5, JavaScript, Chart.js
+
+═══════════════════════════════════════════════════════════════════════
+
+For updates and support, contact through Teachers Pay Teachers.
+
+═══════════════════════════════════════════════════════════════════════
