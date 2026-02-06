@@ -32,6 +32,25 @@
             --shadow: rgba(0, 0, 0, 0.4);
         }
 
+        /* Light Mode Theme */
+        body.light-mode {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f6f8fa;
+            --bg-card: #ffffff;
+            --bg-hover: #f0f0f0;
+            --text-primary: #24292f;
+            --text-secondary: #57606a;
+            --text-muted: #6e7781;
+            --accent-blue: #0969da;
+            --accent-green: #1a7f37;
+            --accent-yellow: #bf8700;
+            --accent-orange: #bc4c00;
+            --accent-red: #cf222e;
+            --accent-purple: #8250df;
+            --border: #d0d7de;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
         body {
             font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg-primary);
@@ -76,6 +95,7 @@
             padding: 24px;
             margin-bottom: 24px;
             border: 1px solid var(--border);
+            box-shadow: 0 1px 3px var(--shadow);
         }
 
         .setup-grid {
@@ -133,6 +153,7 @@
             margin-bottom: 24px;
             border: 1px solid var(--border);
             text-align: center;
+            box-shadow: 0 1px 3px var(--shadow);
         }
 
         .timer-display {
@@ -492,6 +513,7 @@
             margin-bottom: 24px;
             border: 1px solid var(--border);
             transition: all 0.3s ease;
+            box-shadow: 0 1px 3px var(--shadow);
         }
 
         .recording-section.alert-active {
@@ -691,6 +713,7 @@
             padding: 24px;
             margin-bottom: 24px;
             border: 1px solid var(--border);
+            box-shadow: 0 1px 3px var(--shadow);
         }
 
         .data-header {
@@ -807,6 +830,7 @@
             padding: 24px;
             margin-bottom: 24px;
             border: 1px solid var(--border);
+            box-shadow: 0 1px 3px var(--shadow);
         }
 
         .chart-wrapper {
@@ -817,6 +841,11 @@
             max-width: 1100px;
             margin-left: auto;
             margin-right: auto;
+            border: 1px solid #e5e7eb;
+        }
+
+        body.light-mode .chart-wrapper {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         .chart-container {
@@ -1328,6 +1357,7 @@
                     <p>Behavioral Observation of Students in Schools - Momentary Time Sampling</p>
                 </div>
                 <div style="display: flex; gap: 8px;">
+                    <button class="btn btn-secondary btn-small" onclick="toggleTheme()" id="themeToggle" title="Toggle Theme">🌙</button>
                     <button class="btn btn-secondary btn-small" onclick="openHelp()" title="Help">?</button>
                     <button class="btn btn-secondary btn-small" onclick="openSettings()" title="Settings">⚙️</button>
                 </div>
@@ -1692,6 +1722,11 @@
             const saved = localStorage.getItem(STORAGE_KEYS.SETTINGS);
             if (saved) {
                 settings = { ...settings, ...JSON.parse(saved) };
+            }
+            // Apply saved theme
+            if (settings.theme === 'light') {
+                document.body.classList.add('light-mode');
+                updateThemeToggleIcon();
             }
         }
 
@@ -2602,6 +2637,21 @@
 
         function closeHelp() {
             document.getElementById('helpModal').classList.remove('show');
+        }
+
+        // Theme Functions
+        function toggleTheme() {
+            const isLightMode = document.body.classList.toggle('light-mode');
+            settings.theme = isLightMode ? 'light' : 'dark';
+            saveSettings();
+            updateThemeToggleIcon();
+        }
+
+        function updateThemeToggleIcon() {
+            const toggleBtn = document.getElementById('themeToggle');
+            const isLightMode = document.body.classList.contains('light-mode');
+            toggleBtn.textContent = isLightMode ? '☀️' : '🌙';
+            toggleBtn.title = isLightMode ? 'Switch to Dark Mode' : 'Switch to Light Mode';
         }
 
         // Close modals on escape key
