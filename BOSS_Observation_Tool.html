@@ -51,6 +51,62 @@
             --shadow: rgba(0, 0, 0, 0.1);
         }
 
+        /* Light Mode - Behavior Button Overrides for Better Contrast */
+        body.light-mode .btn-aet {
+            background: rgba(26, 127, 55, 0.15);
+            color: #116329;
+            border-color: rgba(26, 127, 55, 0.5);
+        }
+
+        body.light-mode .btn-aet:hover:not(:disabled) {
+            background: rgba(26, 127, 55, 0.25);
+            border-color: #1a7f37;
+        }
+
+        body.light-mode .btn-pet {
+            background: rgba(26, 127, 55, 0.12);
+            color: #1a7f37;
+            border-color: rgba(26, 127, 55, 0.4);
+        }
+
+        body.light-mode .btn-pet:hover:not(:disabled) {
+            background: rgba(26, 127, 55, 0.2);
+            border-color: #1a7f37;
+        }
+
+        body.light-mode .btn-oft-m {
+            background: rgba(207, 34, 46, 0.12);
+            color: #a40e26;
+            border-color: rgba(207, 34, 46, 0.4);
+        }
+
+        body.light-mode .btn-oft-m:hover:not(:disabled) {
+            background: rgba(207, 34, 46, 0.2);
+            border-color: #cf222e;
+        }
+
+        body.light-mode .btn-oft-v {
+            background: rgba(207, 34, 46, 0.12);
+            color: #cf222e;
+            border-color: rgba(207, 34, 46, 0.35);
+        }
+
+        body.light-mode .btn-oft-v:hover:not(:disabled) {
+            background: rgba(207, 34, 46, 0.2);
+            border-color: #cf222e;
+        }
+
+        body.light-mode .btn-oft-p {
+            background: rgba(188, 76, 0, 0.12);
+            color: #953800;
+            border-color: rgba(188, 76, 0, 0.4);
+        }
+
+        body.light-mode .btn-oft-p:hover:not(:disabled) {
+            background: rgba(188, 76, 0, 0.2);
+            border-color: #bc4c00;
+        }
+
         body {
             font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg-primary);
