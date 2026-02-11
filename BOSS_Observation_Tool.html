@@ -617,6 +617,17 @@
             color: var(--text-muted);
         }
 
+        .notes-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .notes-header .section-title {
+            margin-bottom: 0;
+        }
+
         .behavior-panel {
             display: flex;
             flex-direction: column;
@@ -1264,6 +1275,12 @@
                 align-items: flex-start;
             }
 
+            .notes-header {
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+            }
+
             .sticky-info-bar {
                 padding: 8px 16px;
                 flex-direction: column;
@@ -1492,7 +1509,12 @@
             <div class="recording-grid">
                 <!-- Notes on the left -->
                 <div class="notes-panel">
-                    <h3 class="section-title">Observation Notes</h3>
+                    <div class="notes-header">
+                        <h3 class="section-title">Observation Notes</h3>
+                        <button class="btn btn-secondary btn-small" onclick="copyNotesToClipboard()" title="Copy notes to clipboard">
+                            📋 Copy
+                        </button>
+                    </div>
                     <textarea id="observationNotes" placeholder="Type observation notes here...&#10;&#10;• Classroom context&#10;• Activities occurring&#10;• Student behaviors&#10;• Interventions used&#10;&#10;(Notes auto-save as you type)"></textarea>
                 </div>
 
@@ -2506,6 +2528,22 @@
                     console.error(err);
                 });
             }, 'image/png', 1.0);
+        }
+
+        function copyNotesToClipboard() {
+            const notes = document.getElementById('observationNotes').value;
+
+            if (!notes || notes.trim() === '') {
+                showToast('No notes to copy');
+                return;
+            }
+
+            navigator.clipboard.writeText(notes).then(() => {
+                showToast('Notes copied to clipboard!');
+            }).catch(err => {
+                showToast('Failed to copy notes');
+                console.error(err);
+            });
         }
 
         function downloadChart() {
