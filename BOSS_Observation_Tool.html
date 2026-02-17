@@ -890,6 +890,41 @@
             color: var(--accent-red);
         }
 
+        /* Edit Button in Table */
+        .btn-edit {
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: 600;
+            font-family: inherit;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            color: var(--accent-blue);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-edit:hover {
+            background: var(--accent-blue);
+            color: white;
+            border-color: var(--accent-blue);
+        }
+
+        /* Edit Modal Button Grid */
+        .edit-btn-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .edit-btn-grid .behavior-btn {
+            min-height: 44px;
+        }
+
+        .edit-btn-grid .behavior-btn:disabled {
+            opacity: 1;
+        }
+
         /* Chart Section */
         .chart-section {
             background: var(--bg-card);
@@ -1605,11 +1640,12 @@
                             <th>Subject</th>
                             <th>Behavior</th>
                             <th>Status</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody id="dataTableBody">
                         <tr>
-                            <td colspan="5" class="empty-state">
+                            <td colspan="6" class="empty-state">
                                 <div class="empty-state-icon">📊</div>
                                 <div>No data yet. Start an observation to begin recording.</div>
                             </td>
@@ -1762,6 +1798,47 @@
                         <li>Maintain objectivity - record what you see, not interpretations</li>
                         <li>Use notes to capture context and important details</li>
                     </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Interval Modal -->
+    <div class="modal" id="editModal">
+        <div class="modal-content" style="max-width: 480px;">
+            <div class="modal-header">
+                <h2>Edit Interval <span id="editIntervalNum"></span></h2>
+                <button class="modal-close" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="color: var(--text-secondary); margin-bottom: 16px;">
+                    <span id="editSubjectLabel" style="font-weight: 600;"></span> at <span id="editTimeLabel" style="font-weight: 600;"></span>
+                    &mdash; Current: <strong id="editCurrentBehavior"></strong>
+                </p>
+                <div class="edit-behavior-options">
+                    <div style="margin-bottom: 8px; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Select new behavior:</div>
+                    <div class="edit-btn-grid">
+                        <button class="behavior-btn btn-aet edit-option" onclick="applyEdit('AET')">
+                            <span class="code">1 AET</span>
+                            <span class="label">Active Engagement</span>
+                        </button>
+                        <button class="behavior-btn btn-pet edit-option" onclick="applyEdit('PET')">
+                            <span class="code">2 PET</span>
+                            <span class="label">Passive Engagement</span>
+                        </button>
+                        <button class="behavior-btn btn-oft-m edit-option" onclick="applyEdit('OFT-M')">
+                            <span class="code">3 OFT-M</span>
+                            <span class="label">Motor</span>
+                        </button>
+                        <button class="behavior-btn btn-oft-v edit-option" onclick="applyEdit('OFT-V')">
+                            <span class="code">4 OFT-V</span>
+                            <span class="label">Verbal</span>
+                        </button>
+                        <button class="behavior-btn btn-oft-p edit-option" onclick="applyEdit('OFT-P')">
+                            <span class="code">5 OFT-P</span>
+                            <span class="label">Passive</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2432,11 +2509,11 @@
 
         function updateDataTable() {
             const tbody = document.getElementById('dataTableBody');
-            
+
             if (observations.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="5" class="empty-state">
+                        <td colspan="6" class="empty-state">
                             <div class="empty-state-icon">📊</div>
                             <div>No data yet. Start an observation to begin recording.</div>
                         </td>
@@ -2445,13 +2522,14 @@
                 return;
             }
 
-            tbody.innerHTML = observations.map(obs => `
+            tbody.innerHTML = observations.map((obs, index) => `
                 <tr>
                     <td>${obs.interval}</td>
                     <td>${obs.time}</td>
                     <td><span class="badge badge-${obs.subject.toLowerCase()}">${obs.subject}</span></td>
                     <td><strong>${obs.behavior}</strong></td>
                     <td><span class="badge badge-${obs.isOnTask ? 'on-task' : 'off-task'}">${obs.isOnTask ? 'On-Task' : 'Off-Task'}</span></td>
+                    <td><button class="btn-edit" onclick="openEditModal(${index})">Edit</button></td>
                 </tr>
             `).reverse().join('');
         }
@@ -2733,6 +2811,43 @@
             document.getElementById('helpModal').classList.remove('show');
         }
 
+        // Edit Interval Functions
+        let editingIndex = null;
+
+        function openEditModal(index) {
+            editingIndex = index;
+            const obs = observations[index];
+
+            document.getElementById('editIntervalNum').textContent = obs.interval;
+            document.getElementById('editSubjectLabel').textContent = obs.subject === 'Target' ? 'Target Student' : 'Comparison Peer';
+            document.getElementById('editTimeLabel').textContent = obs.time;
+            document.getElementById('editCurrentBehavior').textContent = obs.behavior;
+
+            document.getElementById('editModal').classList.add('show');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('show');
+            editingIndex = null;
+        }
+
+        function applyEdit(newBehavior) {
+            if (editingIndex === null) return;
+
+            const obs = observations[editingIndex];
+            obs.behavior = newBehavior;
+            obs.isOnTask = newBehavior === 'AET' || newBehavior === 'PET';
+
+            updateDataTable();
+            updateStats();
+            updateChart();
+            updateObservationCounts();
+            autoSaveSession();
+
+            closeEditModal();
+            showToast(`Interval ${obs.interval} updated to ${newBehavior}`);
+        }
+
         // Theme Functions
         function toggleTheme() {
             const isLightMode = document.body.classList.toggle('light-mode');
@@ -2754,6 +2869,7 @@
                 closeSessionManager();
                 closeSettings();
                 closeHelp();
+                closeEditModal();
             }
         });
     </script>
