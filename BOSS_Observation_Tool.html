@@ -1700,9 +1700,6 @@
                 <button class="btn btn-secondary" onclick="downloadChart()">
                     ⬇ Download Chart
                 </button>
-                <button class="btn btn-secondary" onclick="exportData()">
-                    📄 Export CSV
-                </button>
                 <button class="btn btn-secondary" onclick="printReport()">
                     🖨 Print Report
                 </button>
@@ -2784,65 +2781,6 @@ ${notes ? `<div class="section-title">Observation Notes</div><div class="notes-b
             const win = window.open('', '_blank');
             win.document.write(reportHtml);
             win.document.close();
-        }
-
-        function exportData() {
-            if (observations.length === 0) {
-                showToast('No data to export');
-                return;
-            }
-
-            const studentName = document.getElementById('studentName').value;
-            const observerName = document.getElementById('observerName').value;
-            const date = document.getElementById('observationDate').value;
-            const notes = document.getElementById('observationNotes').value;
-
-            const targetObs = observations.filter(o => o.subject === 'Target');
-            const peerObs = observations.filter(o => o.subject === 'Peer');
-
-            const calcPercent = (obs, behaviors) => {
-                if (obs.length === 0) return 0;
-                const count = obs.filter(o => behaviors.includes(o.behavior)).length;
-                return Math.round((count / obs.length) * 100);
-            };
-
-            let csv = 'BOSS Observation Data\n';
-            csv += `Student,${studentName}\n`;
-            csv += `Observer,${observerName}\n`;
-            csv += `Date,${date}\n`;
-            csv += `Target Observations,${targetObs.length}\n`;
-            csv += `Peer Observations,${peerObs.length}\n\n`;
-            
-            csv += 'Raw Data\n';
-            csv += 'Interval,Time,Subject,Behavior,On-Task\n';
-            
-            observations.forEach(obs => {
-                csv += `${obs.interval},${obs.time},${obs.subject},${obs.behavior},${obs.isOnTask ? 'Yes' : 'No'}\n`;
-            });
-
-            // Add summary percentages
-            csv += `\nSummary Percentages\n`;
-            csv += `Behavior,Target %,Peer %\n`;
-            csv += `AET,${calcPercent(targetObs, ['AET'])},${calcPercent(peerObs, ['AET'])}\n`;
-            csv += `PET,${calcPercent(targetObs, ['PET'])},${calcPercent(peerObs, ['PET'])}\n`;
-            csv += `Total On-Task,${calcPercent(targetObs, ['AET', 'PET'])},${calcPercent(peerObs, ['AET', 'PET'])}\n`;
-            csv += `OFT-M,${calcPercent(targetObs, ['OFT-M'])},${calcPercent(peerObs, ['OFT-M'])}\n`;
-            csv += `OFT-V,${calcPercent(targetObs, ['OFT-V'])},${calcPercent(peerObs, ['OFT-V'])}\n`;
-            csv += `OFT-P,${calcPercent(targetObs, ['OFT-P'])},${calcPercent(peerObs, ['OFT-P'])}\n`;
-            csv += `Total Off-Task,${calcPercent(targetObs, ['OFT-M', 'OFT-V', 'OFT-P'])},${calcPercent(peerObs, ['OFT-M', 'OFT-V', 'OFT-P'])}\n`;
-
-            // Add notes
-            if (notes) {
-                csv += `\nObservation Notes\n`;
-                csv += `"${notes.replace(/"/g, '""')}"\n`;
-            }
-
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const link = document.createElement('a');
-            link.download = `BOSS_${studentName}_${date}.csv`;
-            link.href = URL.createObjectURL(blob);
-            link.click();
-            showToast('Data exported to CSV!');
         }
 
         function showToast(message) {
