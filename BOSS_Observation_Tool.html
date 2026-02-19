@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BOSS Observation Tool</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -1425,14 +1425,41 @@
                 background: white;
                 color: black;
             }
-            
+
             .btn, .control-buttons, .behavior-section {
                 display: none;
             }
-            
+
             .chart-section, .data-section {
                 break-inside: avoid;
             }
+        }
+
+        /* CDN Warning Banner */
+        .cdn-warning {
+            display: none;
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 12px 20px;
+            margin-bottom: 16px;
+            color: #664d03;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .cdn-warning.show {
+            display: block;
+        }
+
+        /* Footer */
+        .app-footer {
+            text-align: center;
+            padding: 24px;
+            color: var(--text-muted);
+            font-size: 12px;
+            border-top: 1px solid var(--border);
+            margin-top: 8px;
         }
     </style>
 </head>
@@ -1673,11 +1700,21 @@
                 <button class="btn btn-secondary" onclick="downloadChart()">
                     ⬇ Download Chart
                 </button>
-                <button class="btn btn-secondary" onclick="exportData()">
-                    📄 Export CSV
+                <button class="btn btn-secondary" onclick="printReport()">
+                    🖨 Print Report
                 </button>
             </div>
         </section>
+
+        <!-- CDN Warning -->
+        <div class="cdn-warning" id="cdnWarning">
+            ⚠ Chart library failed to load. Your network may be blocking external resources. The chart will not display, but all other features (recording, data table, CSV export) still work.
+        </div>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            BOSS Observation Tool v1.1 &nbsp;|&nbsp; Data is stored locally on this device only &nbsp;|&nbsp; &copy; 2024
+        </footer>
     </div>
 
     <!-- Toast Notification -->
@@ -1701,6 +1738,19 @@
                 <div class="modal-section">
                     <h3>Saved Sessions</h3>
                     <div id="sessionList"></div>
+                </div>
+                <div class="modal-section" style="border-top: 1px solid var(--border); padding-top: 20px;">
+                    <h3>Backup &amp; Restore</h3>
+                    <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 12px;">
+                        Export all saved sessions to a file before updating to a new version. Import the file afterward to restore your data.
+                    </p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn btn-secondary" onclick="exportBackup()">⬇ Export All Sessions</button>
+                        <label class="btn btn-secondary" style="cursor: pointer;">
+                            ⬆ Import Sessions
+                            <input type="file" id="importFileInput" accept=".json" onchange="importBackup(event)" style="display: none;">
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1727,14 +1777,6 @@
                     <label>Alert Volume</label>
                     <input type="range" id="volumeSetting" min="0" max="1" step="0.1" value="0.3" onchange="updateVolumeSetting()">
                     <span id="volumeValue">30%</span>
-                </div>
-                <div class="settings-group">
-                    <label>Observation Pattern (Target : Peer)</label>
-                    <select id="patternSetting" onchange="updatePatternSetting()">
-                        <option value="3:1">3:1 (3 Target, 1 Peer)</option>
-                        <option value="4:1" selected>4:1 (4 Target, 1 Peer)</option>
-                        <option value="5:1">5:1 (5 Target, 1 Peer)</option>
-                    </select>
                 </div>
             </div>
         </div>
@@ -1845,6 +1887,17 @@
     </div>
 
     <script>
+        // Sanitize user-supplied strings before inserting into innerHTML
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
         // State
         let isRunning = false;
         let isPaused = false;
@@ -1861,8 +1914,7 @@
         let settings = {
             intervalLength: 15,
             volume: 0.3,
-            theme: 'dark',
-            observationPattern: '4:1' // 4 target : 1 peer
+            theme: 'dark'
         };
 
         // LocalStorage keys
@@ -1956,7 +2008,7 @@
         }
 
         // Save session to library
-        function saveSessionToLibrary(sessionName) {
+        function saveSessionToLibrary(sessionName, overwriteIndex = -1) {
             const sessionData = {
                 name: sessionName || `${document.getElementById('studentName').value} - ${document.getElementById('observationDate').value}`,
                 studentName: document.getElementById('studentName').value,
@@ -1973,10 +2025,16 @@
 
             const saved = localStorage.getItem(STORAGE_KEYS.SAVED_SESSIONS);
             const sessions = saved ? JSON.parse(saved) : [];
-            sessions.push(sessionData);
-            localStorage.setItem(STORAGE_KEYS.SAVED_SESSIONS, JSON.stringify(sessions));
 
-            showToast('Session saved to library!');
+            if (overwriteIndex >= 0 && overwriteIndex < sessions.length) {
+                sessions[overwriteIndex] = sessionData;
+                showToast('Session overwritten!');
+            } else {
+                sessions.push(sessionData);
+                showToast('Session saved to library!');
+            }
+
+            localStorage.setItem(STORAGE_KEYS.SAVED_SESSIONS, JSON.stringify(sessions));
             return sessionData;
         }
 
@@ -1998,7 +2056,13 @@
             document.getElementById('observationDate').valueAsDate = new Date();
             loadSettings();
             updateTotalIntervals();
-            initChart();
+
+            // Check if Chart.js loaded successfully (fails on restricted school networks)
+            if (typeof Chart === 'undefined') {
+                document.getElementById('cdnWarning').classList.add('show');
+            } else {
+                initChart();
+            }
 
             // Check for saved session and prompt to restore
             const savedSession = loadCurrentSession();
@@ -2314,6 +2378,7 @@
 
             oscillator.start(audioContext.currentTime);
             oscillator.stop(audioContext.currentTime + 0.3);
+            oscillator.onended = () => audioContext.close();
         }
 
         function recordBehavior(behavior) {
@@ -2418,6 +2483,9 @@
         }
 
         function resetObservation() {
+            if (observations.length > 0 || currentSeconds > 0) {
+                if (!confirm('Reset will clear all recorded intervals and the timer. Are you sure?')) return;
+            }
             stopObservation();
             currentSeconds = 0;
             currentInterval = 0;
@@ -2636,63 +2704,101 @@
             showToast('Chart downloaded!');
         }
 
-        function exportData() {
+        function printReport() {
             if (observations.length === 0) {
-                showToast('No data to export');
+                showToast('No data to print');
                 return;
             }
 
-            const studentName = document.getElementById('studentName').value;
-            const observerName = document.getElementById('observerName').value;
-            const date = document.getElementById('observationDate').value;
-            const notes = document.getElementById('observationNotes').value;
+            const studentName = escapeHtml(document.getElementById('studentName').value || 'Unknown');
+            const observerName = escapeHtml(document.getElementById('observerName').value || 'Unknown');
+            const date = document.getElementById('observationDate').value || '';
+            const notes = escapeHtml(document.getElementById('observationNotes').value || '');
 
             const targetObs = observations.filter(o => o.subject === 'Target');
             const peerObs = observations.filter(o => o.subject === 'Peer');
 
             const calcPercent = (obs, behaviors) => {
                 if (obs.length === 0) return 0;
-                const count = obs.filter(o => behaviors.includes(o.behavior)).length;
-                return Math.round((count / obs.length) * 100);
+                return Math.round((obs.filter(o => behaviors.includes(o.behavior)).length / obs.length) * 100);
             };
 
-            let csv = 'BOSS Observation Data\n';
-            csv += `Student,${studentName}\n`;
-            csv += `Observer,${observerName}\n`;
-            csv += `Date,${date}\n`;
-            csv += `Target Observations,${targetObs.length}\n`;
-            csv += `Peer Observations,${peerObs.length}\n\n`;
-            
-            csv += 'Raw Data\n';
-            csv += 'Interval,Time,Subject,Behavior,On-Task\n';
-            
-            observations.forEach(obs => {
-                csv += `${obs.interval},${obs.time},${obs.subject},${obs.behavior},${obs.isOnTask ? 'Yes' : 'No'}\n`;
-            });
+            const targetOnTask = calcPercent(targetObs, ['AET', 'PET']);
+            const peerOnTask = calcPercent(peerObs, ['AET', 'PET']);
 
-            // Add summary percentages
-            csv += `\nSummary Percentages\n`;
-            csv += `Behavior,Target %,Peer %\n`;
-            csv += `AET,${calcPercent(targetObs, ['AET'])},${calcPercent(peerObs, ['AET'])}\n`;
-            csv += `PET,${calcPercent(targetObs, ['PET'])},${calcPercent(peerObs, ['PET'])}\n`;
-            csv += `Total On-Task,${calcPercent(targetObs, ['AET', 'PET'])},${calcPercent(peerObs, ['AET', 'PET'])}\n`;
-            csv += `OFT-M,${calcPercent(targetObs, ['OFT-M'])},${calcPercent(peerObs, ['OFT-M'])}\n`;
-            csv += `OFT-V,${calcPercent(targetObs, ['OFT-V'])},${calcPercent(peerObs, ['OFT-V'])}\n`;
-            csv += `OFT-P,${calcPercent(targetObs, ['OFT-P'])},${calcPercent(peerObs, ['OFT-P'])}\n`;
-            csv += `Total Off-Task,${calcPercent(targetObs, ['OFT-M', 'OFT-V', 'OFT-P'])},${calcPercent(peerObs, ['OFT-M', 'OFT-V', 'OFT-P'])}\n`;
+            const chartDataUrl = typeof Chart !== 'undefined'
+                ? document.getElementById('behaviorChart').toDataURL('image/png', 1.0)
+                : null;
 
-            // Add notes
-            if (notes) {
-                csv += `\nObservation Notes\n`;
-                csv += `"${notes.replace(/"/g, '""')}"\n`;
+            const rowsHtml = observations.map(obs => `
+                <tr>
+                    <td>${obs.interval}</td>
+                    <td>${obs.time}</td>
+                    <td>${escapeHtml(obs.subject)}</td>
+                    <td><strong>${escapeHtml(obs.behavior)}</strong></td>
+                    <td>${obs.isOnTask ? 'On-Task' : 'Off-Task'}</td>
+                </tr>
+            `).join('');
+
+            const reportHtml = `<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+<title>BOSS Report - ${studentName}</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 40px; color: #222; font-size: 13px; }
+  h1 { font-size: 20px; margin-bottom: 4px; }
+  h2 { font-size: 14px; color: #555; font-weight: normal; margin-bottom: 20px; }
+  .meta { display: flex; gap: 40px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid #ddd; }
+  .meta-item { }
+  .meta-label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+  .meta-value { font-size: 15px; font-weight: 600; }
+  .summary { display: flex; gap: 40px; margin-bottom: 24px; }
+  .stat { text-align: center; background: #f5f5f5; padding: 16px 24px; border-radius: 8px; }
+  .stat-val { font-size: 28px; font-weight: 700; }
+  .stat-val.target { color: #0969da; }
+  .stat-val.peer { color: #1a7f37; }
+  .stat-lbl { font-size: 11px; color: #666; text-transform: uppercase; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 12px; }
+  th { background: #f0f0f0; padding: 8px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+  td { padding: 7px 12px; border-bottom: 1px solid #eee; }
+  .notes-box { background: #f9f9f9; border: 1px solid #ddd; border-radius: 6px; padding: 16px; white-space: pre-wrap; font-size: 13px; line-height: 1.6; margin-bottom: 24px; }
+  img { max-width: 100%; margin: 0 auto; display: block; }
+  .section-title { font-size: 12px; font-weight: 600; color: #555; text-transform: uppercase; letter-spacing: 0.5px; margin: 20px 0 8px; }
+  @media print { body { margin: 20px; } }
+</style>
+</head><body>
+<h1>Behavioral Observation of Students in Schools (BOSS)</h1>
+<h2>Observation Report</h2>
+<div class="meta">
+  <div class="meta-item"><div class="meta-label">Student</div><div class="meta-value">${studentName}</div></div>
+  <div class="meta-item"><div class="meta-label">Observer</div><div class="meta-value">${observerName}</div></div>
+  <div class="meta-item"><div class="meta-label">Date</div><div class="meta-value">${date}</div></div>
+  <div class="meta-item"><div class="meta-label">Total Intervals</div><div class="meta-value">${observations.length}</div></div>
+</div>
+<div class="section-title">Summary</div>
+<div class="summary">
+  <div class="stat"><div class="stat-val target">${targetOnTask}%</div><div class="stat-lbl">Target On-Task</div></div>
+  <div class="stat"><div class="stat-val peer">${peerOnTask}%</div><div class="stat-lbl">Peer On-Task</div></div>
+  <div class="stat"><div class="stat-val">${targetObs.length}</div><div class="stat-lbl">Target Intervals</div></div>
+  <div class="stat"><div class="stat-val">${peerObs.length}</div><div class="stat-lbl">Peer Intervals</div></div>
+</div>
+${chartDataUrl ? `<div class="section-title">Visual Summary</div><img src="${chartDataUrl}">` : ''}
+<div class="section-title">Interval Data</div>
+<table>
+  <thead><tr><th>Interval</th><th>Time</th><th>Subject</th><th>Behavior</th><th>Status</th></tr></thead>
+  <tbody>${rowsHtml}</tbody>
+</table>
+${notes ? `<div class="section-title">Observation Notes</div><div class="notes-box">${notes}</div>` : ''}
+<script>window.onload = function() { window.print(); }<\/script>
+</body></html>`;
+
+            const win = window.open('', '_blank');
+            if (!win) {
+                showToast('Popup blocked — please allow popups for this page and try again');
+                return;
             }
-
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const link = document.createElement('a');
-            link.download = `BOSS_${studentName}_${date}.csv`;
-            link.href = URL.createObjectURL(blob);
-            link.click();
-            showToast('Data exported to CSV!');
+            win.document.write(reportHtml);
+            win.document.close();
         }
 
         function showToast(message) {
@@ -2720,10 +2826,18 @@
             }
 
             const sessionName = prompt('Enter a name for this session:', `${studentName} - ${document.getElementById('observationDate').value}`);
-            if (sessionName) {
-                saveSessionToLibrary(sessionName);
-                refreshSessionList();
+            if (!sessionName) return;
+
+            const sessions = getSavedSessions();
+            const existingIndex = sessions.findIndex(s => s.name === sessionName);
+
+            if (existingIndex !== -1) {
+                if (!confirm(`A session named "${sessionName}" already exists. Overwrite it?`)) return;
+                saveSessionToLibrary(sessionName, existingIndex);
+            } else {
+                saveSessionToLibrary(sessionName, -1);
             }
+            refreshSessionList();
         }
 
         function refreshSessionList() {
@@ -2741,7 +2855,7 @@
                 return `
                 <div class="session-item">
                     <div class="session-info">
-                        <div class="session-name">${session.name}</div>
+                        <div class="session-name">${escapeHtml(session.name)}</div>
                         <div class="session-meta">
                             ${intervalInfo} • ${elapsed} elapsed • ${new Date(session.timestamp).toLocaleDateString()}
                         </div>
@@ -2771,13 +2885,69 @@
             }
         }
 
+        // Backup & Restore Functions
+        function exportBackup() {
+            const sessions = getSavedSessions();
+            if (sessions.length === 0) {
+                showToast('No saved sessions to export');
+                return;
+            }
+
+            const backup = {
+                version: '1.1',
+                exportedAt: new Date().toISOString(),
+                sessions: sessions
+            };
+
+            const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.download = `BOSS_Backup_${new Date().toISOString().slice(0, 10)}.json`;
+            link.href = URL.createObjectURL(blob);
+            link.click();
+            showToast(`Exported ${sessions.length} session(s) to backup file`);
+        }
+
+        function importBackup(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const backup = JSON.parse(e.target.result);
+
+                    if (!backup.sessions || !Array.isArray(backup.sessions)) {
+                        showToast('Invalid backup file format');
+                        return;
+                    }
+
+                    const incoming = backup.sessions;
+                    const existing = getSavedSessions();
+
+                    // Merge: skip duplicates by matching name + timestamp
+                    const existingKeys = new Set(existing.map(s => `${s.name}|${s.timestamp}`));
+                    const toAdd = incoming.filter(s => !existingKeys.has(`${s.name}|${s.timestamp}`));
+
+                    const merged = existing.concat(toAdd);
+                    localStorage.setItem(STORAGE_KEYS.SAVED_SESSIONS, JSON.stringify(merged));
+
+                    refreshSessionList();
+                    showToast(`Imported ${toAdd.length} new session(s) — ${incoming.length - toAdd.length} duplicate(s) skipped`);
+                } catch (err) {
+                    showToast('Failed to read backup file — is it a valid BOSS backup?');
+                }
+                // Reset file input so same file can be re-imported if needed
+                event.target.value = '';
+            };
+            reader.readAsText(file);
+        }
+
         // Settings Functions
         function openSettings() {
             document.getElementById('settingsModal').classList.add('show');
             document.getElementById('intervalLengthSetting').value = settings.intervalLength;
             document.getElementById('volumeSetting').value = settings.volume;
             document.getElementById('volumeValue').textContent = Math.round(settings.volume * 100) + '%';
-            document.getElementById('patternSetting').value = settings.observationPattern;
         }
 
         function closeSettings() {
@@ -2796,11 +2966,6 @@
             saveSettings();
         }
 
-        function updatePatternSetting() {
-            settings.observationPattern = document.getElementById('patternSetting').value;
-            saveSettings();
-            showToast('Observation pattern updated. Will apply to next observation.');
-        }
 
         // Help Functions
         function openHelp() {
