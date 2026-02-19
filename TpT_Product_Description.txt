@@ -1,12 +1,12 @@
 ═══════════════════════════════════════════════════════════════════════
-    TPT PRODUCT LISTING - COPY & PASTE THIS CONTENT
+   TPT PRODUCT LISTING - COPY & PASTE THIS CONTENT
 ═══════════════════════════════════════════════════════════════════════
 
 PRODUCT TITLE (Max 100 characters):
 BOSS Observation Tool - Digital Behavioral Observation Time Sampling for Schools
 
 SUBTITLE:
-Streamline your BOSS observations with automated timing, instant charts, and professional data export!
+Streamline your BOSS observations with automated 15-second interval timing and instant professional charts!
 
 ═══════════════════════════════════════════════════════════════════════
 
@@ -16,13 +16,13 @@ Transform your behavioral observations with this professional digital BOSS (Beha
 
 🎯 WHAT IS THIS?
 
-A complete digital tool for conducting systematic direct observations using momentary time sampling. This easy-to-use HTML file runs entirely on your computer - no internet connection, no installation, no subscriptions!
+A complete digital tool for conducting systematic direct observations using momentary time sampling. This easy-to-use HTML file runs entirely on your computer - no installation, no subscriptions!
 
 ⭐ KEY FEATURES
 
 AUTOMATED TIMING
-• Precision 15-second interval timer with audio alerts
-• Customizable intervals (10s, 15s, 20s, 30s)
+• Precision 15-second interval timer with audio alerts (standard BOSS methodology)
+• Customizable observation duration (5, 10, 15, 20, or 30 minutes)
 • 4:1 observation pattern (4 target, 1 peer)
 • Visual countdown to next interval
 • Sticky timer bar (stays visible when scrolling)
@@ -32,56 +32,55 @@ BEHAVIOR RECORDING
 • Click buttons or use keyboard shortcuts (Ctrl+1-5)
 • Clear visual alerts for when to record
 • Works even while typing notes!
-• Records 60+ intervals per session
+• Edit observations after recording
 
-PROFESSIONAL DATA EXPORT
+PROFESSIONAL DATA & CHARTS
 • Beautiful charts ready for reports
-• Copy & paste directly into Word documents
-• Export to CSV for Excel analysis
-• Downloadable PNG charts
-• Real-time percentage calculations
+• Copy & paste directly into Word documents or psychoeducational reports
+• Real-time on-task percentage calculations
+• Printable reports with all data and graphs
 
 AUTO-SAVE & SESSION MANAGEMENT
 • Never lose data - auto-saves as you work
 • Save multiple observation sessions
 • Load previous sessions anytime
-• Session library with search
+• Session library with custom names
 • Restore accidentally closed sessions
+• Export/import backup files for safekeeping
 
 NOTES & DOCUMENTATION
-• Built-in notes field (auto-saves)
+• Built-in notes field (auto-saves as you type)
 • Record context and environmental factors
 • Side-by-side layout: notes + behaviors
 • Perfect for comprehensive FBAs
 
 CUSTOMIZATION
 • Light/Dark mode themes
-• Adjustable alert volume (or mute)
-• Flexible observation patterns (3:1, 4:1, 5:1)
-• Multiple duration options (5-30 minutes)
+• Adjustable alert volume (or mute completely)
+• Multiple observation duration options (5-30 minutes)
 
 📋 WHAT YOU GET
 
 ✅ BOSS_Observation_Tool.html (the complete tool)
-✅ README.txt (installation & instructions)
-✅ Quick_Start.txt (one-page reference)
-✅ LICENSE.txt (terms of use)
+✅ Built-in help system with full BOSS methodology guide
+✅ Keyboard shortcuts reference
+✅ Free lifetime updates via TpT
 
 💻 WORKS ON EVERYTHING
 
 ✓ Windows, Mac, Chromebook, Linux
 ✓ Chrome, Firefox, Safari, Edge browsers
-✓ Desktop, laptop, tablet
-✓ 100% offline - no internet needed
+✓ Desktop, laptop, iPad, Android tablets
+✓ 100% offline after first load
 ✓ No installation required - just open the file!
 
 🔒 PRIVACY & COMPLIANCE
 
-• All data stays on YOUR computer
+• All data stays on YOUR device
 • Nothing sent to the internet
 • No accounts or login required
 • FERPA compliant
-• Perfect for districts with strict policies
+• Perfect for districts with strict privacy policies
 
 👥 PERFECT FOR
 
@@ -96,16 +95,16 @@ CUSTOMIZATION
 
 1. Extract ZIP file
 2. Double-click the HTML file
-3. Enter student info
-4. Start observation
-5. Record behaviors when prompted
+3. Enter student info and select observation duration
+4. Click "Start Observation"
+5. Record behaviors when prompted (every 15 seconds)
 6. Export professional charts & data
 
 🎓 METHODOLOGY
 
-Based on the validated BOSS observation system by Shapiro (2004). Users should be trained in BOSS procedures before conducting observations.
+Based on the validated BOSS observation system by Shapiro (2004). Uses standard 15-second momentary time sampling intervals. Users should be trained in BOSS procedures before conducting observations.
 
-💡 WHY TEACHERS LOVE THIS
+💡 WHY SCHOOL PSYCHOLOGISTS LOVE THIS
 
 "Saves SO much time compared to paper forms!" ⭐⭐⭐⭐⭐
 "The automatic timer is a game-changer for accuracy" ⭐⭐⭐⭐⭐
@@ -115,13 +114,12 @@ Based on the validated BOSS observation system by Shapiro (2004). Users should b
 🆘 SUPPORT
 
 Questions? Issues? Contact through TpT messaging!
-Response within 2-3 business days.
+Fast response - typically within 24-48 hours.
 
 📜 LICENSING
 
 SINGLE USER: One educator, unlimited students
-SCHOOL LICENSE: Available separately
-DISTRICT LICENSE: Contact for pricing
+Questions about school/district licenses? Send me a message!
 
 ═══════════════════════════════════════════════════════════════════════
 
@@ -142,45 +140,27 @@ PRODUCT TAGS (Choose 10-15):
 • BCBA
 • behavior specialist
 • direct observation
-• educational assessment
 
 ═══════════════════════════════════════════════════════════════════════
 
 CATEGORIES:
 
-Primary: Assessment > Classroom Management > Special Education
-Grade Levels: PreK, Kindergarten, 1st, 2nd, 3rd, 4th, 5th, 6th, 7th, 8th, 9th, 10th, 11th, 12th, Higher Education, Adult Education, Homeschool, Staff
-
-Resource Type: Assessment, Professional Development, Technology
-
-File Type: HTML, PDF (for documentation)
+Primary: Assessment, Special Education, Classroom Management
+Grade Levels: PreK, K, 1st, 2nd, 3rd, 4th, 5th, 6th, 7th, 8th, 9th, 10th, 11th, 12th, Higher Ed
+Resource Type: Assessment, Professional Development, Tools
+File Type: HTML, PDF (documentation)
 
 ═══════════════════════════════════════════════════════════════════════
 
-RECOMMENDED PRICE: $15.99
+RECOMMENDED PRICING:
 
-Price Range for Similar Products:
-• Simple worksheets: $2-5
-• Digital tools: $10-20
-• Comprehensive systems: $20-30
+Launch Price (First 30 days or 50 sales): $9.99
+Regular Price: $14.99
 
-Suggested Pricing:
-• Single License: $15.99
-• School License (up to 50 users): $79.99
-• District License: $299.99 (contact for custom quote)
-
-═══════════════════════════════════════════════════════════════════════
-
-PREVIEW FILE NOTES:
-
-Create a PDF showing:
-• 4-6 screenshots of the tool in action
-• Timer display
-• Behavior recording panel
-• Chart output example
-• Session manager
-• Table of contents
-• "PREVIEW ONLY" watermark on each page
-• DO NOT include the actual working HTML file!
+This pricing reflects:
+• Professional-grade software tool (not a simple worksheet)
+• Unlimited reusability
+• Saves significant time per observation
+• Competitive with similar assessment tools
 
 ═══════════════════════════════════════════════════════════════════════
