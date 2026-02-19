@@ -1,11 +1,11 @@
 ═══════════════════════════════════════════════════════════════════════
-    BOSS OBSERVATION TOOL - QUICK START GUIDE
+   BOSS OBSERVATION TOOL - QUICK START GUIDE
 ═══════════════════════════════════════════════════════════════════════
 
 INSTALLATION
 1. Extract ZIP file to your computer
 2. Double-click "BOSS_Observation_Tool.html"
-3. Bookmark the page in your browser
+3. Bookmark the page in your browser for quick access
 
 ═══════════════════════════════════════════════════════════════════════
 
@@ -13,24 +13,24 @@ INSTALLATION
 
 [1] SETUP (30 seconds)
     • Enter student name, observer name, date
-    • Select duration (5, 10, 15, 20, or 30 minutes)
+    • Select observation duration (5, 10, 15, 20, or 30 minutes)
 
 [2] START
     • Click "▶ Start Observation"
-    • Timer starts, audio alert every 15 seconds
+    • Timer starts with audio alert every 15 seconds
 
 [3] OBSERVE & RECORD
     • When beep sounds, look at student
     • Click behavior button or press keyboard shortcut:
 
       ON-TASK:
-      1 or Ctrl+1 → AET (Active Engaged Time)
-      2 or Ctrl+2 → PET (Passive Engaged Time)
+      Ctrl+1 → AET (Active Engaged Time)
+      Ctrl+2 → PET (Passive Engaged Time)
 
       OFF-TASK:
-      3 or Ctrl+3 → OFT-M (Motor)
-      4 or Ctrl+4 → OFT-V (Verbal)
-      5 or Ctrl+5 → OFT-P (Passive)
+      Ctrl+3 → OFT-M (Motor)
+      Ctrl+4 → OFT-V (Verbal)
+      Ctrl+5 → OFT-P (Passive)
 
     • Pattern: Target (4x) → Peer (1x) → Repeat
 
@@ -40,9 +40,9 @@ INSTALLATION
     • Keep typing while recording behaviors
 
 [5] EXPORT DATA
-    • 📄 Export CSV → Spreadsheet analysis
-    • 📋 Copy Chart → Paste into Word
-    • 💾 Sessions → Save for later
+    • 📋 Copy Chart → Paste into Word or reports
+    • 💾 Save Session → Keep for your records
+    • 🖨 Print Report → Complete documentation
 
 ═══════════════════════════════════════════════════════════════════════
 
@@ -82,12 +82,13 @@ TIPS FOR ACCURATE OBSERVATIONS
 
 IMPORTANT REMINDERS
 
-• Works 100% offline - no internet needed
+• Standard 15-second intervals (BOSS methodology)
+• Works 100% offline after first load
 • All data stays on your computer (FERPA compliant)
 • Auto-saves as you work
-• Export data regularly as backup
+• Save sessions regularly for backup
 • Light/Dark mode: Click 🌙/☀️ button
-• Settings: Click ⚙️ to adjust volume, intervals, pattern
+• Settings: Click ⚙️ to adjust volume
 • Help: Click ? button for full guide
 
 ═══════════════════════════════════════════════════════════════════════
@@ -98,13 +99,13 @@ File won't open?
 → Right-click → Open With → Chrome/Firefox/Safari
 
 No sound?
-→ Check volume, adjust in ⚙️ Settings
+→ Check computer volume, adjust in ⚙️ Settings
 
 Data disappeared?
-→ Don't clear browser cache. Export to CSV for backup.
+→ Don't clear browser cache. Save sessions regularly.
 
 ═══════════════════════════════════════════════════════════════════════
 
-Need more help? See README.txt or User Guide (PDF)
+Need more help? Click the ? button in the tool for the full guide
 
 ═══════════════════════════════════════════════════════════════════════
