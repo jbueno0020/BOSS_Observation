@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BOSS Observation Tool - Preview</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -615,14 +617,20 @@
 
             <div class="subsection-title">Behavior Breakdown Chart</div>
             <p class="description">Visual comparison of target student vs. comparison peer across all five behavior categories. The chart updates automatically as you record observations.</p>
-            <div class="screenshot-frame" style="height: 250px; display: flex; align-items: center; justify-content: center; background: white; border: 1px solid #d0d7de;">
-                <div style="text-align: center; color: #6e7781;">
-                    <div style="font-size: 48px; margin-bottom: 10px;">📊</div>
-                    <div style="font-size: 14px;">Grouped bar chart showing behavior percentages</div>
-                    <div style="font-size: 12px; margin-top: 5px;">Target Student vs. Comparison Peer</div>
-                </div>
+            <div class="screenshot-frame" style="background: white; border: 1px solid #d0d7de; padding: 20px;">
+                <canvas id="sampleChart" style="max-height: 400px;"></canvas>
             </div>
             <p class="screenshot-caption">Professional chart ready for printing or copying to reports</p>
+
+            <div class="benefits-box">
+                <h3>Easy Integration with Reports</h3>
+                <ul>
+                    <li>Copy chart directly to clipboard with one click</li>
+                    <li>Paste into Word documents, Google Docs, or psychoeducational reports</li>
+                    <li>Observation notes transfer seamlessly to your assessment write-ups</li>
+                    <li>Print-ready format for IEP meetings and parent conferences</li>
+                </ul>
+            </div>
 
             <div class="subsection-title">Summary Statistics</div>
             <div style="display: flex; gap: 30px; justify-content: center; margin: 20px 0; padding: 20px; background: #f6f8fa; border-radius: 8px;">
@@ -643,7 +651,8 @@
             <div class="subsection-title">Export & Print Options</div>
             <ul class="feature-list">
                 <li>Print complete report with all data and charts</li>
-                <li>Copy chart to clipboard for pasting into documents</li>
+                <li>Copy chart to clipboard - paste directly into psychoeducational reports</li>
+                <li>Copy observation notes to transfer seamlessly into report narratives</li>
                 <li>All data stored locally for your records</li>
             </ul>
         </div>
@@ -781,5 +790,106 @@
             To create a PDF of this preview: Press Ctrl+P (Windows) or Cmd+P (Mac), then "Save as PDF"
         </p>
     </div>
+
+    <script>
+        // Initialize sample chart on page load
+        window.addEventListener('load', function() {
+            const ctx = document.getElementById('sampleChart');
+            if (ctx && typeof Chart !== 'undefined') {
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['% AET', '% PET', '% TOTAL', '% OFT-M', '% OFT-V', '% OFT-P', '% TOTAL'],
+                        datasets: [
+                            {
+                                label: 'Target Student',
+                                data: [50, 25, 75, 8, 8, 8, 25],
+                                backgroundColor: '#4a90d9',
+                                borderColor: '#4a90d9',
+                                borderWidth: 0,
+                                borderRadius: 4,
+                                barPercentage: 0.7,
+                                categoryPercentage: 0.8
+                            },
+                            {
+                                label: 'Comparison Peer',
+                                data: [67, 25, 92, 0, 0, 8, 8],
+                                backgroundColor: '#5cb85c',
+                                borderColor: '#5cb85c',
+                                borderWidth: 0,
+                                borderRadius: 4,
+                                barPercentage: 0.7,
+                                categoryPercentage: 0.8
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        aspectRatio: 2.5,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Behavioral Observation of Students in Schools',
+                                color: '#333',
+                                font: {
+                                    family: 'DM Sans',
+                                    size: 22,
+                                    weight: '600'
+                                },
+                                padding: { bottom: 25 }
+                            },
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    color: '#333',
+                                    font: { family: 'DM Sans', size: 14 },
+                                    padding: 20,
+                                    usePointStyle: true,
+                                    pointStyle: 'rect'
+                                }
+                            },
+                            datalabels: {
+                                anchor: 'end',
+                                align: 'top',
+                                color: '#333',
+                                font: {
+                                    family: 'DM Sans',
+                                    size: 13,
+                                    weight: '600'
+                                },
+                                formatter: (value) => value > 0 ? value : ''
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { display: false },
+                                ticks: {
+                                    color: '#333',
+                                    font: { family: 'DM Sans', size: 13, weight: '500' }
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                title: {
+                                    display: true,
+                                    text: '% of Intervals Observed',
+                                    color: '#666',
+                                    font: { family: 'DM Sans', size: 14, weight: '500' }
+                                },
+                                grid: { color: 'rgba(0, 0, 0, 0.1)' },
+                                ticks: {
+                                    color: '#666',
+                                    font: { family: 'DM Sans', size: 12 },
+                                    stepSize: 10
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
