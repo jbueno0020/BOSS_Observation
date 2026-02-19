@@ -2017,7 +2017,7 @@
         }
 
         // Save session to library
-        function saveSessionToLibrary(sessionName) {
+        function saveSessionToLibrary(sessionName, overwriteIndex = -1) {
             const sessionData = {
                 name: sessionName || `${document.getElementById('studentName').value} - ${document.getElementById('observationDate').value}`,
                 studentName: document.getElementById('studentName').value,
@@ -2034,10 +2034,16 @@
 
             const saved = localStorage.getItem(STORAGE_KEYS.SAVED_SESSIONS);
             const sessions = saved ? JSON.parse(saved) : [];
-            sessions.push(sessionData);
-            localStorage.setItem(STORAGE_KEYS.SAVED_SESSIONS, JSON.stringify(sessions));
 
-            showToast('Session saved to library!');
+            if (overwriteIndex >= 0 && overwriteIndex < sessions.length) {
+                sessions[overwriteIndex] = sessionData;
+                showToast('Session overwritten!');
+            } else {
+                sessions.push(sessionData);
+                showToast('Session saved to library!');
+            }
+
+            localStorage.setItem(STORAGE_KEYS.SAVED_SESSIONS, JSON.stringify(sessions));
             return sessionData;
         }
 
@@ -2821,10 +2827,18 @@ ${notes ? `<div class="section-title">Observation Notes</div><div class="notes-b
             }
 
             const sessionName = prompt('Enter a name for this session:', `${studentName} - ${document.getElementById('observationDate').value}`);
-            if (sessionName) {
-                saveSessionToLibrary(sessionName);
-                refreshSessionList();
+            if (!sessionName) return;
+
+            const sessions = getSavedSessions();
+            const existingIndex = sessions.findIndex(s => s.name === sessionName);
+
+            if (existingIndex !== -1) {
+                if (!confirm(`A session named "${sessionName}" already exists. Overwrite it?`)) return;
+                saveSessionToLibrary(sessionName, existingIndex);
+            } else {
+                saveSessionToLibrary(sessionName, -1);
             }
+            refreshSessionList();
         }
 
         function refreshSessionList() {
