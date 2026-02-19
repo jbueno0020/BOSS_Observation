@@ -422,7 +422,7 @@
                 <div class="feature-card">
                     <div class="feature-icon">⏱️</div>
                     <div class="feature-title">Automated Timing</div>
-                    <div class="feature-desc">Precise 15-second momentary time sampling with audio cues</div>
+                    <div class="feature-desc">Customizable interval timing (10-30s) with audio alerts</div>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">📊</div>
@@ -516,13 +516,13 @@
             <h1 class="page-title">Interface Overview</h1>
 
             <div class="subsection-title">Setup Panel</div>
-            <p class="description">Enter student information and observation details before starting:</p>
+            <p class="description">Enter basic information before starting:</p>
             <ul class="feature-list">
-                <li>Student name and date</li>
-                <li>Grade level and classroom setting</li>
-                <li>Activity being observed</li>
+                <li>Student name</li>
                 <li>Observer name</li>
+                <li>Observation date</li>
             </ul>
+            <p class="description" style="font-size: 13px; margin-top: 10px;">Additional details like grade level, classroom setting, and activities can be documented in the observation notes section.</p>
 
             <div class="subsection-title">Timer Display</div>
             <div class="screenshot-frame">
@@ -635,11 +635,11 @@
             <div class="subsection-title">Summary Statistics</div>
             <div style="display: flex; gap: 30px; justify-content: center; margin: 20px 0; padding: 20px; background: #f6f8fa; border-radius: 8px;">
                 <div style="text-align: center;">
-                    <div style="font-size: 32px; font-weight: 700; color: #0969da;">75%</div>
+                    <div style="font-size: 32px; font-weight: 700; color: #0969da;">67%</div>
                     <div style="font-size: 12px; color: #57606a; text-transform: uppercase;">Target On-Task</div>
                 </div>
                 <div style="text-align: center;">
-                    <div style="font-size: 32px; font-weight: 700; color: #1a7f37;">92%</div>
+                    <div style="font-size: 32px; font-weight: 700; color: #1a7f37;">100%</div>
                     <div style="font-size: 12px; color: #57606a; text-transform: uppercase;">Peer On-Task</div>
                 </div>
                 <div style="text-align: center;">
@@ -667,7 +667,7 @@
                 <li>Enter student information and observation details in the setup panel</li>
                 <li>Position yourself where you can observe both the target student and comparison peer</li>
                 <li>Click "Start Observation" when ready</li>
-                <li>When the alert sounds and flashes (every 15 seconds), record what you see at that exact moment</li>
+                <li>When the alert sounds and flashes at each interval, record what you see at that exact moment</li>
                 <li>Use the large behavior buttons or keyboard shortcuts to record</li>
                 <li>Add notes in the notes panel as needed</li>
                 <li>When finished, click "Stop Observation"</li>
@@ -806,7 +806,7 @@
                         datasets: [
                             {
                                 label: 'Target Student',
-                                data: [50, 25, 75, 8, 8, 8, 25],
+                                data: [50, 17, 67, 17, 8, 8, 33],
                                 backgroundColor: '#4a90d9',
                                 borderColor: '#4a90d9',
                                 borderWidth: 0,
@@ -816,7 +816,7 @@
                             },
                             {
                                 label: 'Comparison Peer',
-                                data: [67, 25, 92, 0, 0, 8, 8],
+                                data: [67, 33, 100, 0, 0, 0, 0],
                                 backgroundColor: '#5cb85c',
                                 borderColor: '#5cb85c',
                                 borderWidth: 0,
