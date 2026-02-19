@@ -1718,7 +1718,8 @@
 
         <!-- Footer -->
         <footer class="app-footer">
-            BOSS Observation Tool v1.1 &nbsp;|&nbsp; Data is stored locally on this device only &nbsp;|&nbsp; &copy; 2024
+            BOSS Observation Tool v1.1 &nbsp;|&nbsp; Data is stored locally on this device only &nbsp;|&nbsp; &copy; <span id="copyrightYear"></span>
+            <script>document.getElementById('copyrightYear').textContent = new Date().getFullYear();</script>
         </footer>
     </div>
 

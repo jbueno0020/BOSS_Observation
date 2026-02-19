@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOSS Observation Tool - Preview</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @page {
+            size: letter;
+            margin: 0.5in;
+        }
+
+        @media print {
+            .page-break {
+                page-break-after: always;
+            }
+            body {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #24292f;
+            background: #f6f8fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 8.5in;
+            margin: 0 auto;
+            background: white;
+        }
+
+        .page {
+            padding: 0.75in;
+            min-height: 10in;
+            background: white;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Cover Page */
+        .cover-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, #0969da 0%, #1a7f37 100%);
+            color: white;
+        }
+
+        .cover-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .cover-subtitle {
+            font-size: 22px;
+            font-weight: 400;
+            margin-bottom: 40px;
+            opacity: 0.95;
+        }
+
+        .cover-version {
+            font-size: 18px;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 12px 32px;
+            border-radius: 100px;
+            margin-bottom: 50px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .feature-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .feature-desc {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        /* Content Pages */
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0969da;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #0969da;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #24292f;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .subsection-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a7f37;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            font-size: 14px;
+            color: #57606a;
+            margin-bottom: 15px;
+        }
+
+        .screenshot-frame {
+            border: 2px solid #d0d7de;
+            border-radius: 8px;
+            padding: 20px;
+            background: #f6f8fa;
+            margin: 20px 0;
+        }
+
+        .screenshot-caption {
+            font-size: 12px;
+            color: #6e7781;
+            font-style: italic;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        /* Mock Interface Elements */
+        .mock-timer {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 48px;
+            font-weight: 500;
+            color: #1a7f37;
+            text-align: center;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #d0d7de;
+        }
+
+        .mock-button-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .mock-button {
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            border: 2px solid;
+        }
+
+        .mock-button.green {
+            background: rgba(26, 127, 55, 0.1);
+            color: #1a7f37;
+            border-color: #1a7f37;
+        }
+
+        .mock-button.red {
+            background: rgba(207, 34, 46, 0.1);
+            color: #cf222e;
+            border-color: #cf222e;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 10px 0 10px 30px;
+            position: relative;
+            font-size: 14px;
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #1a7f37;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .specs-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        .specs-table td {
+            padding: 12px;
+            border: 1px solid #d0d7de;
+        }
+
+        .specs-table td:first-child {
+            font-weight: 600;
+            background: #f6f8fa;
+            width: 40%;
+        }
+
+        .keyboard-grid {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 12px;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        .keyboard-key {
+            background: #f6f8fa;
+            border: 2px solid #d0d7de;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .keyboard-action {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .benefits-box {
+            background: linear-gradient(135deg, rgba(9, 105, 218, 0.1), rgba(26, 127, 55, 0.1));
+            border-left: 4px solid #0969da;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .benefits-box h3 {
+            color: #0969da;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .benefits-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .benefits-box li {
+            padding: 5px 0 5px 25px;
+            position: relative;
+            font-size: 14px;
+        }
+
+        .benefits-box li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #0969da;
+            font-weight: 700;
+        }
+
+        .workflow-steps {
+            counter-reset: step-counter;
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .workflow-steps li {
+            counter-increment: step-counter;
+            padding: 15px 15px 15px 50px;
+            margin-bottom: 15px;
+            background: #f6f8fa;
+            border-left: 4px solid #1a7f37;
+            border-radius: 8px;
+            position: relative;
+            font-size: 14px;
+        }
+
+        .workflow-steps li:before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 15px;
+            top: 15px;
+            background: #1a7f37;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #d0d7de;
+            text-align: center;
+            font-size: 12px;
+            color: #6e7781;
+        }
+
+        .warning-box {
+            background: #fff8c5;
+            border: 2px solid #bf8700;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .warning-box strong {
+            color: #bf8700;
+        }
+
+        .sample-data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 12px;
+        }
+
+        .sample-data-table th {
+            background: #0969da;
+            color: white;
+            padding: 10px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .sample-data-table td {
+            padding: 8px 10px;
+            border: 1px solid #d0d7de;
+        }
+
+        .sample-data-table tr:nth-child(even) {
+            background: #f6f8fa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-target {
+            background: rgba(9, 105, 218, 0.15);
+            color: #0969da;
+        }
+
+        .badge-peer {
+            background: rgba(26, 127, 55, 0.15);
+            color: #1a7f37;
+        }
+
+        .badge-on {
+            background: rgba(26, 127, 55, 0.15);
+            color: #1a7f37;
+        }
+
+        .badge-off {
+            background: rgba(207, 34, 46, 0.15);
+            color: #cf222e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- COVER PAGE -->
+        <div class="page cover-page page-break">
+            <div class="cover-title">BOSS Observation Tool</div>
+            <div class="cover-subtitle">Digital Behavioral Observation of Students in Schools</div>
+            <div class="cover-version">Version 1.1 • Professional Edition</div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⏱️</div>
+                    <div class="feature-title">Automated Timing</div>
+                    <div class="feature-desc">Precise 15-second momentary time sampling with audio cues</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-title">Real-Time Charts</div>
+                    <div class="feature-desc">Live visualization of behavior data as you observe</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💾</div>
+                    <div class="feature-title">Session Management</div>
+                    <div class="feature-desc">Save, load, and manage multiple observation sessions</div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🖨️</div>
+                    <div class="feature-title">Professional Reports</div>
+                    <div class="feature-desc">Print-ready reports with graphs and data tables</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 2: WHAT'S INCLUDED -->
+        <div class="page page-break">
+            <h1 class="page-title">What's Included</h1>
+
+            <div class="section-title">What You Get</div>
+            <ul class="feature-list">
+                <li><strong>BOSS_Observation_Tool.html</strong> - Complete observation tool in a single file</li>
+                <li><strong>Built-in Help System</strong> - Comprehensive instructions within the tool</li>
+                <li><strong>Quick Reference</strong> - Keyboard shortcuts and usage tips accessible from the tool</li>
+                <li><strong>Free Updates</strong> - Access to future improvements via your TpT account</li>
+            </ul>
+
+            <div class="section-title">Key Features</div>
+            <ul class="feature-list">
+                <li>4:1 Target-to-Peer observation pattern (standard BOSS methodology)</li>
+                <li>Five behavior categories: AET, PET, OFT-M, OFT-V, OFT-P</li>
+                <li>Customizable interval timing (10s, 15s, 20s, or 30s) with visual and audio alerts</li>
+                <li>Pause and resume capability for interruptions</li>
+                <li>Edit observations after recording</li>
+                <li>Real-time on-task percentage calculations</li>
+                <li>Printable reports with behavior breakdown charts</li>
+                <li>Session save/load with automatic backup</li>
+                <li>Dark mode and light mode themes</li>
+                <li>Keyboard shortcuts for one-handed operation (Ctrl+1-5)</li>
+                <li>Adjustable alert volume</li>
+                <li>Single HTML file - no installation or software required</li>
+                <li>Data stored locally on your device (FERPA compliant)</li>
+            </ul>
+
+            <div class="benefits-box">
+                <h3>Why Teachers and School Psychologists Love This Tool</h3>
+                <ul>
+                    <li>Eliminates the need for paper forms and stopwatches</li>
+                    <li>Reduces human timing errors</li>
+                    <li>Generates professional reports for IEP meetings</li>
+                    <li>Saves hours of data entry and calculation time</li>
+                    <li>No subscription fees - one-time purchase, use forever</li>
+                </ul>
+            </div>
+
+            <div class="section-title">System Requirements</div>
+            <table class="specs-table">
+                <tr>
+                    <td>Platform</td>
+                    <td>Any device with a modern web browser</td>
+                </tr>
+                <tr>
+                    <td>Compatible Browsers</td>
+                    <td>Chrome, Firefox, Safari, Edge (2020 or newer)</td>
+                </tr>
+                <tr>
+                    <td>Operating Systems</td>
+                    <td>Windows, macOS, iPad, Chromebook, Android tablets</td>
+                </tr>
+                <tr>
+                    <td>Internet Required</td>
+                    <td>Only for first use (to load fonts and chart library). Once loaded, browser caches allow offline use.</td>
+                </tr>
+                <tr>
+                    <td>Installation</td>
+                    <td>None - simply open the HTML file in your browser</td>
+                </tr>
+                <tr>
+                    <td>File Size</td>
+                    <td>Approximately 100KB</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- PAGE 3: INTERFACE OVERVIEW -->
+        <div class="page page-break">
+            <h1 class="page-title">Interface Overview</h1>
+
+            <div class="subsection-title">Setup Panel</div>
+            <p class="description">Enter student information and observation details before starting:</p>
+            <ul class="feature-list">
+                <li>Student name and date</li>
+                <li>Grade level and classroom setting</li>
+                <li>Activity being observed</li>
+                <li>Observer name</li>
+            </ul>
+
+            <div class="subsection-title">Timer Display</div>
+            <div class="screenshot-frame">
+                <div class="mock-timer">15:30</div>
+                <div style="text-align: center; margin-top: 15px; font-size: 14px; color: #1a7f37; font-weight: 600;">
+                    RECORDING: Target Student
+                </div>
+                <div style="text-align: center; margin-top: 10px; font-size: 13px; color: #57606a;">
+                    Interval 15 • Target n=12 • Peer n=3
+                </div>
+            </div>
+            <p class="screenshot-caption">Large, easy-to-read timer with current interval information</p>
+
+            <div class="subsection-title">Behavior Recording Panel</div>
+            <p class="description">Click or use keyboard shortcuts to record behaviors at each interval:</p>
+            <div class="screenshot-frame">
+                <div style="background: rgba(9, 105, 218, 0.1); border: 2px solid #0969da; border-radius: 8px; padding: 12px; text-align: center; margin-bottom: 15px; font-weight: 600; color: #0969da;">
+                    🔔 RECORD NOW - Target Student
+                </div>
+                <div class="mock-button-grid">
+                    <div class="mock-button green">
+                        <div style="font-size: 18px; font-weight: 700;">AET</div>
+                        <div style="font-size: 11px; opacity: 0.8;">Active Engagement</div>
+                    </div>
+                    <div class="mock-button green">
+                        <div style="font-size: 18px; font-weight: 700;">PET</div>
+                        <div style="font-size: 11px; opacity: 0.8;">Passive Engagement</div>
+                    </div>
+                    <div class="mock-button red">
+                        <div style="font-size: 18px; font-weight: 700;">OFT-M</div>
+                        <div style="font-size: 11px; opacity: 0.8;">Off-Task Motor</div>
+                    </div>
+                    <div class="mock-button red">
+                        <div style="font-size: 18px; font-weight: 700;">OFT-V</div>
+                        <div style="font-size: 11px; opacity: 0.8;">Off-Task Verbal</div>
+                    </div>
+                </div>
+            </div>
+            <p class="screenshot-caption">Clear visual alerts and large buttons for quick recording</p>
+
+            <div class="subsection-title">Observation Notes</div>
+            <p class="description">Add contextual notes during or after the observation. Notes are saved with the session and included in printed reports.</p>
+        </div>
+
+        <!-- PAGE 4: DATA & REPORTS -->
+        <div class="page page-break">
+            <h1 class="page-title">Data Analysis & Reports</h1>
+
+            <div class="subsection-title">Real-Time Data Table</div>
+            <p class="description">Every recorded observation appears immediately in the data table:</p>
+            <div class="screenshot-frame">
+                <table class="sample-data-table">
+                    <thead>
+                        <tr>
+                            <th>Interval</th>
+                            <th>Time</th>
+                            <th>Subject</th>
+                            <th>Behavior</th>
+                            <th>Status</th>
+                            <th>Edit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>15</td>
+                            <td>3:30</td>
+                            <td><span class="badge badge-target">Target</span></td>
+                            <td><strong>AET</strong></td>
+                            <td><span class="badge badge-on">On-Task</span></td>
+                            <td><button style="padding: 4px 10px; font-size: 11px; border: 1px solid #d0d7de; border-radius: 4px; background: white; cursor: pointer;">Edit</button></td>
+                        </tr>
+                        <tr>
+                            <td>14</td>
+                            <td>3:15</td>
+                            <td><span class="badge badge-peer">Peer</span></td>
+                            <td><strong>PET</strong></td>
+                            <td><span class="badge badge-on">On-Task</span></td>
+                            <td><button style="padding: 4px 10px; font-size: 11px; border: 1px solid #d0d7de; border-radius: 4px; background: white; cursor: pointer;">Edit</button></td>
+                        </tr>
+                        <tr>
+                            <td>13</td>
+                            <td>3:00</td>
+                            <td><span class="badge badge-target">Target</span></td>
+                            <td><strong>OFT-M</strong></td>
+                            <td><span class="badge badge-off">Off-Task</span></td>
+                            <td><button style="padding: 4px 10px; font-size: 11px; border: 1px solid #d0d7de; border-radius: 4px; background: white; cursor: pointer;">Edit</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="screenshot-caption">Sortable data table with edit capability</p>
+
+            <div class="subsection-title">Behavior Breakdown Chart</div>
+            <p class="description">Visual comparison of target student vs. comparison peer across all five behavior categories. The chart updates automatically as you record observations.</p>
+            <div class="screenshot-frame" style="background: white; border: 1px solid #d0d7de; padding: 20px;">
+                <canvas id="sampleChart" style="max-height: 400px;"></canvas>
+            </div>
+            <p class="screenshot-caption">Professional chart ready for printing or copying to reports</p>
+
+            <div class="benefits-box">
+                <h3>Easy Integration with Reports</h3>
+                <ul>
+                    <li>Copy chart directly to clipboard with one click</li>
+                    <li>Paste into Word documents, Google Docs, or psychoeducational reports</li>
+                    <li>Observation notes transfer seamlessly to your assessment write-ups</li>
+                    <li>Print-ready format for IEP meetings and parent conferences</li>
+                </ul>
+            </div>
+
+            <div class="subsection-title">Summary Statistics</div>
+            <div style="display: flex; gap: 30px; justify-content: center; margin: 20px 0; padding: 20px; background: #f6f8fa; border-radius: 8px;">
+                <div style="text-align: center;">
+                    <div style="font-size: 32px; font-weight: 700; color: #0969da;">75%</div>
+                    <div style="font-size: 12px; color: #57606a; text-transform: uppercase;">Target On-Task</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 32px; font-weight: 700; color: #1a7f37;">92%</div>
+                    <div style="font-size: 12px; color: #57606a; text-transform: uppercase;">Peer On-Task</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 32px; font-weight: 700; color: #24292f;">15</div>
+                    <div style="font-size: 12px; color: #57606a; text-transform: uppercase;">Total Intervals</div>
+                </div>
+            </div>
+
+            <div class="subsection-title">Export & Print Options</div>
+            <ul class="feature-list">
+                <li>Print complete report with all data and charts</li>
+                <li>Copy chart to clipboard - paste directly into psychoeducational reports</li>
+                <li>Copy observation notes to transfer seamlessly into report narratives</li>
+                <li>All data stored locally for your records</li>
+            </ul>
+        </div>
+
+        <!-- PAGE 5: WORKFLOW & FEATURES -->
+        <div class="page page-break">
+            <h1 class="page-title">Complete Workflow</h1>
+
+            <div class="section-title">How to Conduct an Observation</div>
+            <ol class="workflow-steps">
+                <li>Open the BOSS_Observation_Tool.html file in your web browser</li>
+                <li>Enter student information and observation details in the setup panel</li>
+                <li>Position yourself where you can observe both the target student and comparison peer</li>
+                <li>Click "Start Observation" when ready</li>
+                <li>When the alert sounds and flashes (every 15 seconds), record what you see at that exact moment</li>
+                <li>Use the large behavior buttons or keyboard shortcuts to record</li>
+                <li>Add notes in the notes panel as needed</li>
+                <li>When finished, click "Stop Observation"</li>
+                <li>Review the data table and chart</li>
+                <li>Save the session for your records</li>
+                <li>Print the report for meetings or documentation</li>
+            </ol>
+
+            <div class="section-title">Advanced Features</div>
+
+            <div class="subsection-title">Session Management</div>
+            <ul class="feature-list">
+                <li><strong>Save Sessions:</strong> Save observations with custom names</li>
+                <li><strong>Load Sessions:</strong> Resume or review previous observations</li>
+                <li><strong>Auto-Backup:</strong> Automatic recovery if browser closes unexpectedly</li>
+                <li><strong>Multiple Sessions:</strong> Track student progress over time</li>
+                <li><strong>Export/Import:</strong> Backup all sessions to a file for safekeeping</li>
+            </ul>
+
+            <div class="subsection-title">Customizable Settings</div>
+            <ul class="feature-list">
+                <li><strong>Interval Length:</strong> Choose 10, 15, 20, or 30 second intervals (default: 15s)</li>
+                <li><strong>Alert Volume:</strong> Adjust beep volume or mute completely</li>
+                <li><strong>Theme:</strong> Switch between dark and light mode for different lighting conditions</li>
+            </ul>
+
+            <div class="subsection-title">Edit Observations</div>
+            <p class="description">Made a mistake? No problem! Click "Edit" next to any observation to change it. Perfect for when you accidentally click the wrong button during fast-paced observations.</p>
+
+            <div class="subsection-title">Pause & Resume</div>
+            <p class="description">If an interruption occurs (fire drill, unexpected visitor, etc.), pause the observation and resume when ready. The timer and interval count will pick up exactly where you left off.</p>
+
+            <div class="subsection-title">Dark Mode / Light Mode</div>
+            <p class="description">Switch between dark and light themes based on your preference and lighting conditions. The chart background always remains white for optimal printing.</p>
+
+            <div class="warning-box">
+                <strong>Important:</strong> This tool implements momentary time sampling methodology. Users should be trained in BOSS observation procedures and understand when this method is appropriate for their assessment needs.
+            </div>
+        </div>
+
+        <!-- PAGE 6: KEYBOARD SHORTCUTS -->
+        <div class="page page-break">
+            <h1 class="page-title">Keyboard Shortcuts</h1>
+
+            <p class="description">Speed up your observations with one-handed keyboard shortcuts. Perfect for keeping your eyes on the students while recording.</p>
+
+            <div class="section-title">Behavior Recording</div>
+            <div class="keyboard-grid">
+                <div class="keyboard-key">Ctrl+1</div>
+                <div class="keyboard-action">Record AET (Active Engaged Time)</div>
+
+                <div class="keyboard-key">Ctrl+2</div>
+                <div class="keyboard-action">Record PET (Passive Engaged Time)</div>
+
+                <div class="keyboard-key">Ctrl+3</div>
+                <div class="keyboard-action">Record OFT-M (Off-Task Motor)</div>
+
+                <div class="keyboard-key">Ctrl+4</div>
+                <div class="keyboard-action">Record OFT-V (Off-Task Verbal)</div>
+
+                <div class="keyboard-key">Ctrl+5</div>
+                <div class="keyboard-action">Record OFT-P (Off-Task Passive)</div>
+            </div>
+
+            <p class="description" style="font-size: 12px; color: #6e7781; margin-top: 10px;">
+                <em>Note: Mac users use Cmd instead of Ctrl</em>
+            </p>
+
+            <div class="section-title">Timer Controls</div>
+            <div class="keyboard-grid">
+                <div class="keyboard-key">Space</div>
+                <div class="keyboard-action">Start / Pause / Resume observation</div>
+
+                <div class="keyboard-key">Esc</div>
+                <div class="keyboard-action">Stop observation</div>
+            </div>
+
+            <div class="benefits-box">
+                <h3>Pro Tip: One-Handed Operation</h3>
+                <ul>
+                    <li>Rest your left hand with thumb on Ctrl and fingers on keys 1-5</li>
+                    <li>Keep your eyes on the students</li>
+                    <li>When the beep sounds, press Ctrl + the appropriate number key</li>
+                    <li>No need to look at the screen or use the mouse</li>
+                </ul>
+            </div>
+
+            <div class="section-title">Technical Support</div>
+            <table class="specs-table">
+                <tr>
+                    <td>Training Required</td>
+                    <td>Users should be familiar with BOSS observation methodology</td>
+                </tr>
+                <tr>
+                    <td>Recommended Use</td>
+                    <td>School psychologists, behavior specialists, special education teachers, RTI teams</td>
+                </tr>
+                <tr>
+                    <td>Data Privacy</td>
+                    <td>All data stored locally on your device - never sent to any server</td>
+                </tr>
+                <tr>
+                    <td>Updates</td>
+                    <td>Free updates provided via your Teachers Pay Teachers account</td>
+                </tr>
+            </table>
+
+            <div class="footer">
+                <p><strong>BOSS Observation Tool v1.1</strong></p>
+                <p>Professional Digital Observation System for Educational Settings</p>
+                <p style="margin-top: 10px; font-size: 11px;">
+                    This tool is an unofficial digital implementation of momentary time sampling methodology.<br>
+                    Users should be trained in appropriate observation procedures.<br>
+                    All data is stored locally on your device for FERPA compliance.
+                </p>
+                <p style="margin-top: 15px;">
+                    Thank you for your purchase! Questions? Contact through Teachers Pay Teachers.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <div style="text-align: center; padding: 30px; background: white; margin-top: 20px;">
+        <p style="font-size: 14px; color: #57606a; margin-bottom: 10px;">
+            <strong>Ready to use this tool?</strong>
+        </p>
+        <p style="font-size: 13px; color: #6e7781;">
+            Open BOSS_Observation_Tool.html in your browser and start your first observation!
+        </p>
+        <p style="font-size: 12px; color: #8b949e; margin-top: 20px;">
+            To create a PDF of this preview: Press Ctrl+P (Windows) or Cmd+P (Mac), then "Save as PDF"
+        </p>
+    </div>
+
+    <script>
+        // Initialize sample chart on page load
+        window.addEventListener('load', function() {
+            const ctx = document.getElementById('sampleChart');
+            if (ctx && typeof Chart !== 'undefined') {
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['% AET', '% PET', '% TOTAL', '% OFT-M', '% OFT-V', '% OFT-P', '% TOTAL'],
+                        datasets: [
+                            {
+                                label: 'Target Student',
+                                data: [50, 25, 75, 8, 8, 8, 25],
+                                backgroundColor: '#4a90d9',
+                                borderColor: '#4a90d9',
+                                borderWidth: 0,
+                                borderRadius: 4,
+                                barPercentage: 0.7,
+                                categoryPercentage: 0.8
+                            },
+                            {
+                                label: 'Comparison Peer',
+                                data: [67, 25, 92, 0, 0, 8, 8],
+                                backgroundColor: '#5cb85c',
+                                borderColor: '#5cb85c',
+                                borderWidth: 0,
+                                borderRadius: 4,
+                                barPercentage: 0.7,
+                                categoryPercentage: 0.8
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        aspectRatio: 2.5,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Behavioral Observation of Students in Schools',
+                                color: '#333',
+                                font: {
+                                    family: 'DM Sans',
+                                    size: 22,
+                                    weight: '600'
+                                },
+                                padding: { bottom: 25 }
+                            },
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    color: '#333',
+                                    font: { family: 'DM Sans', size: 14 },
+                                    padding: 20,
+                                    usePointStyle: true,
+                                    pointStyle: 'rect'
+                                }
+                            },
+                            datalabels: {
+                                anchor: 'end',
+                                align: 'top',
+                                color: '#333',
+                                font: {
+                                    family: 'DM Sans',
+                                    size: 13,
+                                    weight: '600'
+                                },
+                                formatter: (value) => value > 0 ? value : ''
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { display: false },
+                                ticks: {
+                                    color: '#333',
+                                    font: { family: 'DM Sans', size: 13, weight: '500' }
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                title: {
+                                    display: true,
+                                    text: '% of Intervals Observed',
+                                    color: '#666',
+                                    font: { family: 'DM Sans', size: 14, weight: '500' }
+                                },
+                                grid: { color: 'rgba(0, 0, 0, 0.1)' },
+                                ticks: {
+                                    color: '#666',
+                                    font: { family: 'DM Sans', size: 12 },
+                                    stepSize: 10
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
