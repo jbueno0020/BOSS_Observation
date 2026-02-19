@@ -1778,14 +1778,6 @@
                     <input type="range" id="volumeSetting" min="0" max="1" step="0.1" value="0.3" onchange="updateVolumeSetting()">
                     <span id="volumeValue">30%</span>
                 </div>
-                <div class="settings-group">
-                    <label>Observation Pattern (Target : Peer)</label>
-                    <select id="patternSetting" onchange="updatePatternSetting()">
-                        <option value="3:1">3:1 (3 Target, 1 Peer)</option>
-                        <option value="4:1" selected>4:1 (4 Target, 1 Peer)</option>
-                        <option value="5:1">5:1 (5 Target, 1 Peer)</option>
-                    </select>
-                </div>
             </div>
         </div>
     </div>
@@ -1922,8 +1914,7 @@
         let settings = {
             intervalLength: 15,
             volume: 0.3,
-            theme: 'dark',
-            observationPattern: '4:1' // 4 target : 1 peer
+            theme: 'dark'
         };
 
         // LocalStorage keys
@@ -2387,6 +2378,7 @@
 
             oscillator.start(audioContext.currentTime);
             oscillator.stop(audioContext.currentTime + 0.3);
+            oscillator.onended = () => audioContext.close();
         }
 
         function recordBehavior(behavior) {
@@ -2491,6 +2483,9 @@
         }
 
         function resetObservation() {
+            if (observations.length > 0 || currentSeconds > 0) {
+                if (!confirm('Reset will clear all recorded intervals and the timer. Are you sure?')) return;
+            }
             stopObservation();
             currentSeconds = 0;
             currentInterval = 0;
@@ -2798,6 +2793,10 @@ ${notes ? `<div class="section-title">Observation Notes</div><div class="notes-b
 </body></html>`;
 
             const win = window.open('', '_blank');
+            if (!win) {
+                showToast('Popup blocked — please allow popups for this page and try again');
+                return;
+            }
             win.document.write(reportHtml);
             win.document.close();
         }
@@ -2949,7 +2948,6 @@ ${notes ? `<div class="section-title">Observation Notes</div><div class="notes-b
             document.getElementById('intervalLengthSetting').value = settings.intervalLength;
             document.getElementById('volumeSetting').value = settings.volume;
             document.getElementById('volumeValue').textContent = Math.round(settings.volume * 100) + '%';
-            document.getElementById('patternSetting').value = settings.observationPattern;
         }
 
         function closeSettings() {
@@ -2968,11 +2966,6 @@ ${notes ? `<div class="section-title">Observation Notes</div><div class="notes-b
             saveSettings();
         }
 
-        function updatePatternSetting() {
-            settings.observationPattern = document.getElementById('patternSetting').value;
-            saveSettings();
-            showToast('Observation pattern updated. Will apply to next observation.');
-        }
 
         // Help Functions
         function openHelp() {
