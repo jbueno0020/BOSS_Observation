@@ -1739,6 +1739,19 @@
                     <h3>Saved Sessions</h3>
                     <div id="sessionList"></div>
                 </div>
+                <div class="modal-section" style="border-top: 1px solid var(--border); padding-top: 20px;">
+                    <h3>Backup &amp; Restore</h3>
+                    <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 12px;">
+                        Export all saved sessions to a file before updating to a new version. Import the file afterward to restore your data.
+                    </p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn btn-secondary" onclick="exportBackup()">⬇ Export All Sessions</button>
+                        <label class="btn btn-secondary" style="cursor: pointer;">
+                            ⬆ Import Sessions
+                            <input type="file" id="importFileInput" accept=".json" onchange="importBackup(event)" style="display: none;">
+                        </label>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -2857,6 +2870,63 @@ ${notes ? `<div class="section-title">Observation Notes</div><div class="notes-b
                 refreshSessionList();
                 showToast('Session deleted');
             }
+        }
+
+        // Backup & Restore Functions
+        function exportBackup() {
+            const sessions = getSavedSessions();
+            if (sessions.length === 0) {
+                showToast('No saved sessions to export');
+                return;
+            }
+
+            const backup = {
+                version: '1.1',
+                exportedAt: new Date().toISOString(),
+                sessions: sessions
+            };
+
+            const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.download = `BOSS_Backup_${new Date().toISOString().slice(0, 10)}.json`;
+            link.href = URL.createObjectURL(blob);
+            link.click();
+            showToast(`Exported ${sessions.length} session(s) to backup file`);
+        }
+
+        function importBackup(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const backup = JSON.parse(e.target.result);
+
+                    if (!backup.sessions || !Array.isArray(backup.sessions)) {
+                        showToast('Invalid backup file format');
+                        return;
+                    }
+
+                    const incoming = backup.sessions;
+                    const existing = getSavedSessions();
+
+                    // Merge: skip duplicates by matching name + timestamp
+                    const existingKeys = new Set(existing.map(s => `${s.name}|${s.timestamp}`));
+                    const toAdd = incoming.filter(s => !existingKeys.has(`${s.name}|${s.timestamp}`));
+
+                    const merged = existing.concat(toAdd);
+                    localStorage.setItem(STORAGE_KEYS.SAVED_SESSIONS, JSON.stringify(merged));
+
+                    refreshSessionList();
+                    showToast(`Imported ${toAdd.length} new session(s) — ${incoming.length - toAdd.length} duplicate(s) skipped`);
+                } catch (err) {
+                    showToast('Failed to read backup file — is it a valid BOSS backup?');
+                }
+                // Reset file input so same file can be re-imported if needed
+                event.target.value = '';
+            };
+            reader.readAsText(file);
         }
 
         // Settings Functions
